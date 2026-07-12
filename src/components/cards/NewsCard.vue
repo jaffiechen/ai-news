@@ -8,6 +8,7 @@ const props = defineProps<{
   news: News
   sources: Source[]
   isFirst?: boolean
+  isLast?: boolean
 }>()
 
 const { getFavorites, toggleFavorite } = useStorage()
@@ -31,9 +32,13 @@ function handleFavorite() {
     class="relative flex gap-4 p-4 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group"
     :class="{ 'animate-breathe': isFirst }"
   >
-    <div class="flex-shrink-0">
+    <div class="flex-shrink-0 relative">
       <div 
-        class="w-3 h-3 rounded-full bg-blue-500 transition-all duration-300"
+        v-if="!isLast"
+        class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-full bg-gray-200 dark:bg-gray-700"
+      ></div>
+      <div 
+        class="relative z-10 w-3 h-3 rounded-full bg-blue-500 transition-all duration-300 group-hover:bg-blue-600 group-hover:scale-125"
         :class="{ 'animate-breathe': isFirst }"
       ></div>
     </div>

@@ -71,14 +71,18 @@ onUnmounted(() => {
         <p class="text-sm">数据加载中，请稍后刷新</p>
       </div>
 
-      <div v-else class="space-y-4">
-        <NewsCard 
-          v-for="(news, index) in newsList" 
-          :key="news.id"
-          :news="news"
-          :sources="sources"
-          :is-first="index === 0"
-        />
+      <div v-else class="relative">
+        <div class="absolute left-[13px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-400 via-gray-200 dark:via-gray-700 to-transparent"></div>
+        <div class="space-y-0">
+          <NewsCard 
+            v-for="(news, index) in newsList" 
+            :key="news.id"
+            :news="news"
+            :sources="sources"
+            :is-first="index === 0"
+            :is-last="index === newsList.length - 1"
+          />
+        </div>
       </div>
     </div>
   </div>
