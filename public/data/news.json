@@ -1,0 +1,103 @@
+[
+  {
+    "id": "news-001",
+    "title": "GPT-5 发布预览版，支持多模态理解与实时推理",
+    "link": "https://example.com/news/1",
+    "source": "openai",
+    "category": "产品发布",
+    "summary": "OpenAI 正式发布 GPT-5 预览版，带来突破性的多模态理解能力和实时推理功能",
+    "pubDate": "2026-07-13T10:30:00Z",
+    "isBreaking": true,
+    "imageUrl": "https://example.com/image.jpg"
+  },
+  {
+    "id": "news-002",
+    "title": "arXiv 最新论文：大型语言模型的推理能力边界",
+    "link": "https://example.com/news/2",
+    "source": "arxiv",
+    "category": "学术研究",
+    "summary": "最新研究探讨了大型语言模型在复杂推理任务中的能力边界和改进方向",
+    "pubDate": "2026-07-13T09:15:00Z",
+    "isBreaking": false
+  },
+  {
+    "id": "news-003",
+    "title": "量子位独家：国内AI大模型最新进展",
+    "link": "https://example.com/news/3",
+    "source": "quantum-bit",
+    "category": "行业动态",
+    "summary": "量子位独家报道国内多家AI公司在大模型领域的最新技术突破和产品发布",
+    "pubDate": "2026-07-13T08:00:00Z",
+    "isBreaking": false
+  },
+  {
+    "id": "news-004",
+    "title": "GitHub Trending：本周最热门的AI开源项目",
+    "link": "https://example.com/news/4",
+    "source": "github-trending",
+    "category": "开源项目",
+    "summary": "本周GitHub上最受欢迎的AI相关开源项目汇总",
+    "pubDate": "2026-07-13T07:30:00Z",
+    "isBreaking": false
+  },
+  {
+    "id": "news-005",
+    "title": "Hacker News 热议：AI Agent 的未来发展方向",
+    "link": "https://example.com/news/5",
+    "source": "hacker-news",
+    "category": "社区讨论",
+    "summary": "Hacker News上关于AI Agent未来发展的热门讨论",
+    "pubDate": "2026-07-13T06:45:00Z",
+    "isBreaking": false
+  },
+  {
+    "id": "news-006",
+    "title": "TechWeb：AI芯片市场迎来新玩家",
+    "link": "https://example.com/news/6",
+    "source": "techweb",
+    "category": "行业动态",
+    "summary": "多家新公司进入AI芯片市场，竞争格局正在改变",
+    "pubDate": "2026-07-12T22:00:00Z",
+    "isBreaking": false
+  },
+  {
+    "id": "news-007",
+    "title": "Towards AI：深度学习优化技巧汇总",
+    "link": "https://example.com/news/7",
+    "source": "towards-ai",
+    "category": "技术教程",
+    "summary": "深度学习训练和推理的实用优化技巧总结",
+    "pubDate": "2026-07-12T20:30:00Z",
+    "isBreaking": false
+  },
+  {
+    "id": "news-008",
+    "title": "VentureBeat：AI创业公司融资趋势分析",
+    "link": "https://example.com/news/8",
+    "source": "venturebeat",
+    "category": "行业分析",
+    "summary": "2026年AI创业公司融资情况分析和趋势预测",
+    "pubDate": "2026-07-12T18:00:00Z",
+    "isBreaking": false
+  },
+  {
+    "id": "news-009",
+    "title": "机器学习周刊：本周精选论文推荐",
+    "link": "https://example.com/news/9",
+    "source": "machine-learning",
+    "category": "学术推荐",
+    "summary": "本周值得关注的机器学习论文推荐",
+    "pubDate": "2026-07-12T16:00:00Z",
+    "isBreaking": false
+  },
+  {
+    "id": "news-010",
+    "title": "AI Bot News：最新AI助手功能更新",
+    "link": "https://example.com/news/10",
+    "source": "ai-bot-news",
+    "category": "产品更新",
+    "summary": "各大AI助手产品的最新功能更新汇总",
+    "pubDate": "2026-07-12T14:00:00Z",
+    "isBreaking": false
+  }
+]

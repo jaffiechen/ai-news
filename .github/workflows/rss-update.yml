@@ -1,0 +1,31 @@
+name: RSS 更新
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 执行 RSS 抓取
+        run: node scripts/rss-fetcher.js
+
+      - name: 提交变更
+        run: |
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+          git add public/data/news.json
+          git commit -m "🔄 RSS 更新: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          git push

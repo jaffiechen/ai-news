@@ -1,0 +1,12 @@
+[
+  {"id": "quantum-bit", "name": "量子位", "icon": "📰", "rssUrl": "https://www.qbitai.com/feed", "category": "中文媒体"},
+  {"id": "arxiv", "name": "arXiv", "icon": "📄", "rssUrl": "https://arxiv.org/rss/cs.AI", "category": "学术"},
+  {"id": "openai", "name": "OpenAI", "icon": "🤖", "rssUrl": "https://openai.com/blog/rss.xml", "category": "公司"},
+  {"id": "techweb", "name": "TechWeb", "icon": "💻", "rssUrl": "https://www.techweb.com.cn/rss", "category": "中文媒体"},
+  {"id": "hacker-news", "name": "Hacker News", "icon": "🔷", "rssUrl": "https://news.ycombinator.com/rss", "category": "社区"},
+  {"id": "github-trending", "name": "GitHub Trending", "icon": "🐙", "rssUrl": "https://github.com/trending/developers", "category": "开源"},
+  {"id": "ai-bot-news", "name": "AI Bot News", "icon": "🔮", "rssUrl": "https://aibot.news/rss", "category": "媒体"},
+  {"id": "towards-ai", "name": "Towards AI", "icon": "📚", "rssUrl": "https://towardsai.net/rss", "category": "学术"},
+  {"id": "machine-learning", "name": "Machine Learning", "icon": "📊", "rssUrl": "https://machinelearningnews.com/rss", "category": "学术"},
+  {"id": "venturebeat", "name": "VentureBeat", "icon": "📈", "rssUrl": "https://venturebeat.com/feed", "category": "媒体"}
+]
