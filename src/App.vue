@@ -79,9 +79,7 @@ const currentSiteSources = computed(() => {
 })
 
 async function handleRefresh() {
-  refreshing.value = true
   await refreshNews()
-  refreshing.value = false
 }
 
 function openFavorites() {

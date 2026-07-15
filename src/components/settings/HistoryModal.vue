@@ -13,7 +13,7 @@ const emit = defineEmits<{
 }>()
 
 const { getHistory, resetHistory } = useStorage()
-const { showSuccess, showConfirm } = useToast()
+const { showSuccess } = useToast()
 const showConfirmDialog = ref(false)
 
 const historyList = ref(getHistory())
