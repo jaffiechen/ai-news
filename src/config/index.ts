@@ -1,6 +1,6 @@
 const DEFAULT_CONFIG = {
-  newsApiUrl: '/data',
-  sourcesApiUrl: '/data/source-status.json',
+  newsApiUrl: `${import.meta.env.BASE_URL}data`.replace(/\/+$/, ''),
+  sourcesApiUrl: `${import.meta.env.BASE_URL}data/source-status.json`,
   updateInterval: 3600000,
   breakingKeywords: ['GPT-5', '发布', '开源', '重磅', '突破性', '重大', '宣布'],
   localStoragePrefix: 'ai-news',
