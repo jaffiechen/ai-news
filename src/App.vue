@@ -123,46 +123,20 @@ onMounted(async () => {
     
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
       <div class="max-w-3xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-        <div class="flex items-center justify-between mb-3 sm:mb-4">
-          <div class="flex items-center gap-2 sm:gap-3">
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 flex-shrink-0">
               AI
             </div>
-            <div>
-              <h1 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">AI 资讯聚合</h1>
-              <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                <span>⏱</span>
-                更新于 {{ formatDateTime(stats.generatedAt) }}
-                <span class="text-gray-300 dark:text-gray-600">·</span>
-                <span>{{ stats.windowHours }}h</span>
+            <div class="min-w-0">
+              <h1 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white truncate">AI 资讯聚合</h1>
+              <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                实时追踪 AI 领域最新动态
               </p>
             </div>
           </div>
-        </div>
-
-        <div class="flex items-center justify-between gap-2 mb-3 sm:mb-4">
-          <div class="flex items-center gap-1">
-            <button
-              @click="setTimeRange('24h')"
-              class="px-2.5 sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
-              :class="timeRange === '24h' 
-                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30' 
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
-            >
-              24h
-            </button>
-            <button
-              @click="setTimeRange('7d')"
-              class="px-2.5 sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
-              :class="timeRange === '7d' 
-                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30' 
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
-            >
-              7天
-            </button>
-          </div>
           
-          <div class="flex items-center gap-0.5 sm:gap-1">
+          <div class="flex items-center gap-0.5 sm:gap-1.5 flex-shrink-0">
             <button 
               @click="openFavorites"
               class="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative"
@@ -185,17 +159,17 @@ onMounted(async () => {
             </button>
             <button 
               @click="handleToggleSound"
-              class="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden sm:block"
+              class="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               :title="soundEnabled ? '关闭声音提醒' : '开启声音提醒'"
             >
-              <span>{{ soundEnabled ? '🔔' : '🔕' }}</span>
+              <span class="text-base sm:text-lg">{{ soundEnabled ? '🔔' : '🔕' }}</span>
             </button>
             <button 
               @click="toggleTranslateMode"
-              class="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden sm:block"
+              class="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               :title="translateTitle"
             >
-              <span>{{ translateIcon }}</span>
+              <span class="text-base sm:text-lg">{{ translateIcon }}</span>
             </button>
             <button 
               @click="handleToggleTheme"
@@ -206,48 +180,71 @@ onMounted(async () => {
             </button>
           </div>
         </div>
+
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+          <div class="flex items-center gap-1">
+            <button
+              @click="setTimeRange('24h')"
+              class="px-2.5 sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+              :class="timeRange === '24h' 
+                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30' 
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
+            >
+              24h
+            </button>
+            <button
+              @click="setTimeRange('7d')"
+              class="px-2.5 sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+              :class="timeRange === '7d' 
+                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30' 
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
+            >
+              7天
+            </button>
+          </div>
+          
+          <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+            <span>⏱</span>
+            <span>更新于 {{ formatDateTime(stats.generatedAt) }}</span>
+            <span class="hidden sm:inline text-gray-300 dark:text-gray-600">·</span>
+            <span class="hidden sm:inline">{{ stats.windowHours }}h</span>
+          </p>
+        </div>
         
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-2.5 sm:p-3 shadow-sm border border-gray-100 dark:border-gray-700">
-          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-            <div class="flex items-center justify-between sm:justify-start gap-2 flex-1">
-              <div class="flex items-center gap-2">
-                <div class="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex-shrink-0">
-                  <span class="text-sm">📄</span>
-                </div>
-                <div class="text-sm">
-                  <span class="text-gray-500 dark:text-gray-400">{{ stats.windowHours }}h</span>
-                  <span class="mx-1 font-semibold text-gray-900 dark:text-white">{{ filteredNews.length.toLocaleString() }}</span>
-                  <span class="text-gray-500 dark:text-gray-400">条</span>
-                </div>
+        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-2.5 sm:p-3 border border-gray-100 dark:border-gray-700">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+            <div class="flex items-center gap-2">
+              <div class="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex-shrink-0">
+                <span class="text-sm">📄</span>
               </div>
-
-              <div class="hidden sm:block w-px h-4 bg-gray-200 dark:bg-gray-600" />
-
-              <button 
-                @click="openSourceModal"
-                class="flex items-center gap-2 hover:opacity-70 transition-opacity"
-              >
-                <div class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex-shrink-0">
-                  <span class="text-sm">🌐</span>
-                </div>
-                <div class="text-sm">
-                  <span class="font-semibold text-gray-900 dark:text-white">{{ stats.sourceCount }}</span>
-                  <span class="mx-1 text-gray-500 dark:text-gray-400">个来源</span>
-                  <span class="text-blue-500 text-xs hidden sm:inline">详情 →</span>
-                </div>
-              </button>
+              <div class="text-xs sm:text-sm min-w-0">
+                <span class="text-gray-500 dark:text-gray-400">{{ stats.windowHours }}h</span>
+                <span class="mx-0.5 font-semibold text-gray-900 dark:text-white">{{ filteredNews.length.toLocaleString() }}</span>
+                <span class="text-gray-500 dark:text-gray-400">条</span>
+              </div>
             </div>
 
-            <div class="sm:hidden w-full h-px bg-gray-200 dark:bg-gray-600" />
+            <button 
+              @click="openSourceModal"
+              class="flex items-center gap-2 hover:opacity-70 transition-opacity text-left"
+            >
+              <div class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex-shrink-0">
+                <span class="text-sm">🌐</span>
+              </div>
+              <div class="text-xs sm:text-sm min-w-0">
+                <span class="font-semibold text-gray-900 dark:text-white">{{ stats.sourceCount }}</span>
+                <span class="mx-0.5 text-gray-500 dark:text-gray-400">个来源</span>
+                <span class="text-blue-500 text-xs hidden sm:inline">详情 →</span>
+              </div>
+            </button>
 
-            <div class="flex items-center justify-center gap-2 sm:flex-1">
-              <div class="sm:hidden w-px h-4 bg-gray-200 dark:bg-gray-600" />
-              <div class="p-1.5 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex-shrink-0">
+            <div class="col-span-2 sm:col-span-1 flex items-center gap-2">
+              <div class="p-1.5 rounded-lg bg-purple-50 dark:bg-purple-900/30 flex-shrink-0">
                 <span class="text-sm">✨</span>
               </div>
-              <div class="text-sm">
+              <div class="text-xs sm:text-sm min-w-0">
                 <span class="text-gray-500 dark:text-gray-400">从</span>
-                <span class="mx-1 font-semibold text-gray-900 dark:text-white">{{ (stats.siteStats.reduce((sum, s) => sum + s.raw_count, 0) || 0).toLocaleString() }}</span>
+                <span class="mx-0.5 font-semibold text-gray-900 dark:text-white">{{ (stats.siteStats.reduce((sum, s) => sum + s.raw_count, 0) || 0).toLocaleString() }}</span>
                 <span class="text-gray-500 dark:text-gray-400">条筛选</span>
               </div>
             </div>

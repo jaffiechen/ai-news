@@ -140,19 +140,19 @@ onUnmounted(() => {
   <Transition name="fade">
     <div 
       v-if="isVisible"
-      class="fixed right-4 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3"
+      class="fixed right-1 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-2 sm:gap-3"
     >
       <button
         @click="scrollToTop"
-        class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-all hover:scale-110"
+        class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-all hover:scale-110"
         title="回到顶部"
       >
-        <span class="text-sm">↑</span>
+        <span class="text-xs sm:text-sm">↑</span>
       </button>
 
       <div 
         ref="progressBarRef"
-        class="relative w-3 h-40 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer overflow-hidden group"
+        class="relative w-2 sm:w-3 h-32 sm:h-40 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer overflow-hidden group"
         @click="handleProgressClick"
         @mousedown="handleMouseDown"
         @touchstart="handleTouchStart"
@@ -163,26 +163,26 @@ onUnmounted(() => {
           :class="{ 'transition-none': isDragging }"
         ></div>
         <div 
-          class="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-white dark:bg-gray-200 rounded-full shadow-md border-2 border-blue-500 transition-all duration-150 opacity-0 group-hover:opacity-100"
-          :style="{ bottom: `calc(${progressPercent}% - 8px)` }"
+          class="absolute left-1/2 -translate-x-1/2 w-3 h-3 sm:w-4 sm:h-4 bg-white dark:bg-gray-200 rounded-full shadow-md border-2 border-blue-500 transition-all duration-150 opacity-0 group-hover:opacity-100"
+          :style="{ bottom: `calc(${progressPercent}% - 6px)` }"
           :class="{ 'opacity-100': isDragging, 'transition-none': isDragging }"
         ></div>
       </div>
 
-      <div class="text-xs text-gray-500 dark:text-gray-400 font-medium">
+      <div class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">
         {{ progressPercent }}%
       </div>
 
-      <div v-if="totalItems > 0" class="text-xs text-gray-400 dark:text-gray-500">
+      <div v-if="totalItems > 0" class="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500">
         {{ currentIndex }}/{{ totalItems }}
       </div>
 
       <button
         @click="scrollToBottom"
-        class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-all hover:scale-110"
+        class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-all hover:scale-110"
         title="跳到底部"
       >
-        <span class="text-sm">↓</span>
+        <span class="text-xs sm:text-sm">↓</span>
       </button>
     </div>
   </Transition>
