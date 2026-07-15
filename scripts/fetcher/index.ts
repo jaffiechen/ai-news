@@ -235,6 +235,8 @@ async function main(): Promise<number> {
   }
 
   const keepAfter = new Date(now.getTime() - archiveDays * 24 * 60 * 60 * 1000);
+  let removedByAge = 0;
+  let removedByAiFilter = 0;
   for (const [id, record] of archive) {
     const ts =
       parseISO(record.last_seen_at) ||
@@ -243,8 +245,21 @@ async function main(): Promise<number> {
       now;
     if (ts < keepAfter) {
       archive.delete(id);
+      removedByAge++;
+      continue;
+    }
+    if (!isAiRelated(record)) {
+      archive.delete(id);
+      removedByAiFilter++;
     }
   }
+  if (removedByAge > 0) {
+    console.log(`🗑️  Removed ${removedByAge} items older than ${archiveDays} days`);
+  }
+  if (removedByAiFilter > 0) {
+    console.log(`🧹 Removed ${removedByAiFilter} non-AI items from archive`);
+  }
+  console.log(`📦 Archive size after cleanup: ${archive.size} items`);
 
   function filterItemsByWindow(hours: number): ArchiveItem[] {
     const windowStart = new Date(now.getTime() - hours * 60 * 60 * 1000);
