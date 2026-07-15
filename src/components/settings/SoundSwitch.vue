@@ -2,13 +2,16 @@
 import { computed } from 'vue'
 import { useStorage } from '@/composables/useStorage'
 
-const { getPreferences, savePreferences } = useStorage()
+const { getPreferencesRef, savePreferences } = useStorage()
 
-const soundEnabled = computed(() => getPreferences().soundEnabled)
+const preferences = getPreferencesRef()
 
-function toggleSound() {
-  savePreferences({ soundEnabled: !soundEnabled.value })
-}
+const soundEnabled = computed({
+  get: () => preferences.value.soundEnabled,
+  set: (value) => {
+    savePreferences({ soundEnabled: value })
+  }
+})
 </script>
 
 <template>
@@ -23,14 +26,21 @@ function toggleSound() {
       </div>
       
       <button 
-        @click="toggleSound"
-        class="relative w-10 h-6 rounded-full transition-colors"
-        :class="soundEnabled ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'"
+        @click.stop="soundEnabled = !soundEnabled"
+        class="group relative w-14 h-7 rounded-full transition-all duration-300"
+        :class="soundEnabled 
+          ? 'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/30' 
+          : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'"
       >
         <span 
-          class="absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform"
-          :class="soundEnabled ? 'translate-x-5' : 'translate-x-1'"
-        ></span>
+          class="absolute top-0.5 w-6 h-6 rounded-full bg-white shadow-md transition-all duration-300 flex items-center justify-center"
+          :class="soundEnabled 
+            ? 'translate-x-7 scale-110' 
+            : 'translate-x-0.5'"
+        >
+          <span v-if="soundEnabled" class="text-blue-600 text-sm">🔔</span>
+          <span v-else class="text-gray-400 text-sm">🔕</span>
+        </span>
       </button>
     </div>
   </div>

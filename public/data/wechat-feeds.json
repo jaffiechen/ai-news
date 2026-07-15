@@ -1,0 +1,244 @@
+[
+  {
+    "name": "AI",
+    "feeds": [
+      {
+        "name": "机器之心",
+        "url": "https://decemberpei.cyou/rssbox/wechat-jiqizhixin.xml"
+      },
+      {
+        "name": "量子位",
+        "url": "https://decemberpei.cyou/rssbox/wechat-liangziwei.xml"
+      },
+      {
+        "name": "新智元",
+        "url": "https://decemberpei.cyou/rssbox/wechat-xinzhiyuan.xml"
+      },
+      {
+        "name": "DeepTech深科技",
+        "url": "https://decemberpei.cyou/rssbox/wechat-shenkeji.xml"
+      },
+      {
+        "name": "PaperWeekly",
+        "url": "https://decemberpei.cyou/rssbox/wechat-paperweekly.xml"
+      },
+      {
+        "name": "计算机视觉life",
+        "url": "https://decemberpei.cyou/rssbox/wechat-jisuanjishijuelife.xml"
+      },
+      {
+        "name": "AI前线",
+        "url": "https://decemberpei.cyou/rssbox/wechat-aiqianxian.xml"
+      },
+      {
+        "name": "夕小瑶科技说",
+        "url": "https://decemberpei.cyou/rssbox/wechat-xixiaoyaokejishuo.xml"
+      },
+      {
+        "name": "海外独角兽",
+        "url": "https://decemberpei.cyou/rssbox/wechat-haiwaidujiaoshou.xml"
+      },
+      {
+        "name": "甲子光年",
+        "url": "https://decemberpei.cyou/rssbox/wechat-jiaziguangnian.xml"
+      },
+      {
+        "name": "集智俱乐部",
+        "url": "https://decemberpei.cyou/rssbox/wechat-jizhijvlebu.xml"
+      }
+    ]
+  },
+  {
+    "name": "科技媒体",
+    "feeds": [
+      {
+        "name": "晚点LatePost",
+        "url": "https://decemberpei.cyou/rssbox/wechat-wandian.xml"
+      },
+      {
+        "name": "36氪",
+        "url": "https://decemberpei.cyou/rssbox/wechat-36ke.xml"
+      },
+      {
+        "name": "36氪Pro",
+        "url": "https://decemberpei.cyou/rssbox/wechat-sanliukepro.xml"
+      },
+      {
+        "name": "虎嗅App",
+        "url": "https://decemberpei.cyou/rssbox/wechat-huxiuapp.xml"
+      },
+      {
+        "name": "极客公园",
+        "url": "https://decemberpei.cyou/rssbox/wechat-jikegongyuan.xml"
+      },
+      {
+        "name": "少数派",
+        "url": "https://decemberpei.cyou/rssbox/wechat-shaoshupai.xml"
+      },
+      {
+        "name": "APPSO",
+        "url": "https://decemberpei.cyou/rssbox/wechat-appso.xml"
+      },
+      {
+        "name": "爱范儿",
+        "url": "https://decemberpei.cyou/rssbox/wechat-anfaner.xml"
+      },
+      {
+        "name": "差评",
+        "url": "https://decemberpei.cyou/rssbox/wechat-chaping.xml"
+      },
+      {
+        "name": "钛媒体",
+        "url": "https://decemberpei.cyou/rssbox/wechat-taimeiti.xml"
+      }
+    ]
+  },
+  {
+    "name": "技术开发",
+    "feeds": [
+      {
+        "name": "InfoQ",
+        "url": "https://decemberpei.cyou/rssbox/wechat-infoq.xml"
+      },
+      {
+        "name": "阿里云开发者",
+        "url": "https://decemberpei.cyou/rssbox/wechat-aliyunkaifazhe.xml"
+      },
+      {
+        "name": "腾讯技术工程",
+        "url": "https://decemberpei.cyou/rssbox/wechat-tengxunjishugongcheng.xml"
+      },
+      {
+        "name": "前端之巅",
+        "url": "https://decemberpei.cyou/rssbox/wechat-qianduanzhidian.xml"
+      },
+      {
+        "name": "架构师之路",
+        "url": "https://decemberpei.cyou/rssbox/wechat-jiagoushizhilu.xml"
+      },
+      {
+        "name": "GitHubDaily",
+        "url": "https://decemberpei.cyou/rssbox/wechat-githubdaily.xml"
+      }
+    ]
+  },
+  {
+    "name": "财经投资",
+    "feeds": [
+      {
+        "name": "华尔街见闻",
+        "url": "https://decemberpei.cyou/rssbox/wechat-huaerjiejianwen.xml"
+      },
+      {
+        "name": "财经杂志",
+        "url": "https://decemberpei.cyou/rssbox/wechat-caijingzazhi.xml"
+      },
+      {
+        "name": "第一财经YiMagazine",
+        "url": "https://decemberpei.cyou/rssbox/wechat-diyicaijing.xml"
+      },
+      {
+        "name": "经纬创投",
+        "url": "https://decemberpei.cyou/rssbox/wechat-jingweichuangtou.xml"
+      },
+      {
+        "name": "红杉汇",
+        "url": "https://decemberpei.cyou/rssbox/wechat-hongshanhui.xml"
+      },
+      {
+        "name": "42章经",
+        "url": "https://decemberpei.cyou/rssbox/wechat-sierzhangjing.xml"
+      },
+      {
+        "name": "远川投资评论",
+        "url": "https://decemberpei.cyou/rssbox/wechat-chuanyuanyouzipinglun.xml"
+      },
+      {
+        "name": "泽平宏观展望",
+        "url": "https://decemberpei.cyou/rssbox/wechat-zepinghongguanzhanwang.xml"
+      }
+    ]
+  },
+  {
+    "name": "个人博主",
+    "feeds": [
+      {
+        "name": "caoz的梦呓",
+        "url": "https://decemberpei.cyou/rssbox/wechat-caozdemengyi.xml"
+      },
+      {
+        "name": "L先生说",
+        "url": "https://decemberpei.cyou/rssbox/wechat-lxianshengshuo.xml"
+      },
+      {
+        "name": "槽边往事",
+        "url": "https://decemberpei.cyou/rssbox/wechat-caobianwangshi.xml"
+      },
+      {
+        "name": "孟岩",
+        "url": "https://decemberpei.cyou/rssbox/wechat-mengyan.xml"
+      },
+      {
+        "name": "刘润",
+        "url": "https://decemberpei.cyou/rssbox/wechat-liurun.xml"
+      },
+      {
+        "name": "辉哥奇谭",
+        "url": "https://decemberpei.cyou/rssbox/wechat-huigeqitan.xml"
+      },
+      {
+        "name": "warfalcon",
+        "url": "https://decemberpei.cyou/rssbox/wechat-warfalcon.xml"
+      },
+      {
+        "name": "玉树芝兰",
+        "url": "https://decemberpei.cyou/rssbox/wechat-yushuzhilan.xml"
+      },
+      {
+        "name": "九边",
+        "url": "https://decemberpei.cyou/rssbox/wechat-jiubian.xml"
+      },
+      {
+        "name": "也谈钱",
+        "url": "https://decemberpei.cyou/rssbox/wechat-yetanqian.xml"
+      },
+      {
+        "name": "keso怎么看",
+        "url": "https://decemberpei.cyou/rssbox/wechat-kesozenmekan.xml"
+      },
+      {
+        "name": "阑夕",
+        "url": "https://decemberpei.cyou/rssbox/wechat-lanxi.xml"
+      }
+    ]
+  },
+  {
+    "name": "产品商业",
+    "feeds": [
+      {
+        "name": "人人都是产品经理",
+        "url": "https://decemberpei.cyou/rssbox/wechat-renrendoushichanpinjingli.xml"
+      },
+      {
+        "name": "互联网怪盗团",
+        "url": "https://decemberpei.cyou/rssbox/wechat-hulianwangguaidaotuan.xml"
+      },
+      {
+        "name": "乱翻书",
+        "url": "https://decemberpei.cyou/rssbox/wechat-luanfanshu.xml"
+      },
+      {
+        "name": "刘言飞语",
+        "url": "https://decemberpei.cyou/rssbox/wechat-liuyanfeiyu.xml"
+      },
+      {
+        "name": "产品犬舍",
+        "url": "https://decemberpei.cyou/rssbox/wechat-chanpinquanshe.xml"
+      },
+      {
+        "name": "FounderPark",
+        "url": "https://decemberpei.cyou/rssbox/wechat-founderpark.xml"
+      }
+    ]
+  }
+]

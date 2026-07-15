@@ -1,832 +1,266 @@
-# AI快讯 - 测试用例文档
+# AI快讯 - 测试用例文档（TEST）
 
-> 生成日期：2026-07-13
-> 阶段：③ /sdd
-> 上游：SDD.md
-
-> **使用说明**：所有用例采用 Given-When-Then 格式 + Vitest 测试代码。
-> 测试前请确认服务已按 README 启动：`npm run dev`
-
----
-
-## 〇、测试环境
-
-| 项 | 值 |
-|---|---|
-| 入口地址 | http://localhost:5173 |
-| 测试框架 | Vitest + Vue Test Utils |
-| 测试工具 | npm run test |
-| 测试顺序 | 工具函数 → Composable → 组件 |
+> 文档版本：v2.0.0
+> 生成日期：2026-07-15
+> 阶段：③ /test
+> 上游：PRD.md + SDD.md
+> 下游：QA 验收
 
 ---
 
-## 一、API-001 useNews.loadNews()
+## 一、测试策略总览
 
-### TC-001-01 正常路径 - 成功加载新闻数据
-```typescript
-describe('useNews', () => {
-  it('should load news successfully', async () => {
-    // Given
-    vi.mock('axios', () => ({
-      get: vi.fn().mockResolvedValue({
-        data: [{ id: 'news-001', title: 'GPT-5发布', pubDate: '2026-07-13T10:30:00Z' }]
-      })
-    }))
-    
-    // When
-    const { loadNews } = useNews()
-    const result = await loadNews()
-    
-    // Then
-    expect(result.success).toBe(true)
-    expect(result.data?.news.length).toBe(1)
-    expect(result.data?.news[0].title).toBe('GPT-5发布')
-  })
-})
-```
+### 1.1 测试分层
 
-### TC-001-02 边界 - 返回空数组
-```typescript
-it('should handle empty news list', async () => {
-  // Given
-  vi.mock('axios', () => ({
-    get: vi.fn().mockResolvedValue({ data: [] })
-  }))
-  
-  // When
-  const { loadNews } = useNews()
-  const result = await loadNews()
-  
-  // Then
-  expect(result.success).toBe(true)
-  expect(result.data?.news.length).toBe(0)
-})
-```
+| 测试层级 | 测试类型 | 工具 | 覆盖范围 | 执行频率 |
+|:---------|:---------|:-----|:---------|:---------|
+| L1 | 单元测试 | Vitest | 工具函数、Composables | 每次提交 |
+| L2 | 组件测试 | Vitest + Vue Test Utils | Vue 组件 | 核心组件 |
+| L3 | 集成测试 | Playwright（可选） | 端到端流程 | 版本发布前 |
+| L4 | 手动测试 | 人工验证 | UI/UX、兼容性 | 版本发布前 |
 
-### TC-001-03 异常 - 网络错误
-```typescript
-it('should return error when network fails', async () => {
-  // Given
-  vi.mock('axios', () => ({
-    get: vi.fn().mockRejectedValue(new Error('Network error'))
-  }))
-  
-  // When
-  const { loadNews } = useNews()
-  const result = await loadNews()
-  
-  // Then
-  expect(result.success).toBe(false)
-  expect(result.error).toBe('1004')
-})
-```
+### 1.2 测试环境
+
+| 环境 | 说明 |
+|:-----|:-----|
+| 开发环境 | `npm run dev` 本地开发服务器 |
+| 测试环境 | `npm run test` Vitest 测试运行器 |
+| 预览环境 | `npm run preview` 生产构建预览 |
 
 ---
 
-## 二、API-002 useNews.filterBySources()
+## 二、单元测试用例
 
-### TC-002-01 正常路径 - 过滤指定信息源
-```typescript
-describe('useNews', () => {
-  it('should filter news by sources', () => {
-    // Given
-    const news = [
-      { id: '1', title: 'News 1', source: 'quantum-bit' },
-      { id: '2', title: 'News 2', source: 'arxiv' },
-      { id: '3', title: 'News 3', source: 'openai' }
-    ]
-    
-    // When
-    const filtered = filterBySources(news, ['quantum-bit', 'arxiv'])
-    
-    // Then
-    expect(filtered.length).toBe(2)
-    expect(filtered.every(n => ['quantum-bit', 'arxiv'].includes(n.source))).toBe(true)
-  })
-})
-```
+### 2.1 工具函数测试（format.ts）
 
-### TC-002-02 边界 - 空数组返回全部
-```typescript
-it('should return all news when sources is empty', () => {
-  // Given
-  const news = [{ id: '1', title: 'News 1', source: 'quantum-bit' }]
-  
-  // When
-  const filtered = filterBySources(news, [])
-  
-  // Then
-  expect(filtered.length).toBe(1)
-})
-```
+| 用例 ID | 测试项 | 输入 | 预期输出 | 优先级 |
+|:-------:|:-------|:-----|:---------|:------:|
+| UT-F001 | formatDate - 正常日期 | `"2026-07-15T10:30:00Z"` | `"2026-07-15"`（按本地时区） | P0 |
+| UT-F002 | formatDate - 空字符串 | `""` | `""` | P1 |
+| UT-F003 | formatDate - 无效日期 | `"invalid-date"` | `""` | P1 |
+| UT-F004 | formatHour - 正常时间 | `"2026-07-15T10:30:00Z"` | `"18:30"`（UTC+8） | P0 |
+| UT-F005 | formatDateTime - 完整时间 | `"2026-07-15T10:30:00Z"` | 包含年月日时分秒 | P1 |
+| UT-F006 | formatTime - 刚刚 | 当前时间前 30 秒 | `"刚刚"` | P1 |
+| UT-F007 | formatTime - 分钟前 | 当前时间前 5 分钟 | `"5分钟前"` | P1 |
+| UT-F008 | formatTime - 小时前 | 当前时间前 3 小时 | `"3小时前"` | P1 |
+| UT-F009 | formatTime - 天前 | 当前时间前 2 天 | `"2天前"` | P1 |
 
-### TC-002-03 异常 - 无效信息源ID
-```typescript
-it('should ignore invalid source IDs', () => {
-  // Given
-  const news = [{ id: '1', title: 'News 1', source: 'quantum-bit' }]
-  
-  // When
-  const filtered = filterBySources(news, ['nonexistent-source'])
-  
-  // Then
-  expect(filtered.length).toBe(0)
-})
-```
+### 2.2 存储服务测试（useStorage.ts）
 
----
+| 用例 ID | 测试项 | 操作 | 预期结果 | 优先级 |
+|:-------:|:-------|:-----|:---------|:------:|
+| UT-S001 | 收藏 - 添加 | toggleFavorite(未收藏的新闻) | 收藏列表数量 +1 | P0 |
+| UT-S002 | 收藏 - 取消 | toggleFavorite(已收藏的新闻) | 收藏列表数量 -1 | P0 |
+| UT-S003 | 收藏 - 幂等性 | 连续 toggleFavorite 两次 | 回到初始状态 | P0 |
+| UT-S004 | 收藏 - 新增计数 | 添加收藏后 | getNewFavoritesCount() 返回新增数 | P1 |
+| UT-S005 | 收藏 - 标记已读 | markFavoritesSeen() | getNewFavoritesCount() 返回 0 | P1 |
+| UT-S006 | 历史 - 添加 | addToHistory(新闻) | 历史列表数量 +1 | P0 |
+| UT-S007 | 历史 - 去重 | 重复 addToHistory 同一条 | 列表数量不变，时间更新 | P0 |
+| UT-S008 | 历史 - 最大数量 | 添加超过 100 条 | 保持 100 条，最旧的被删除 | P1 |
+| UT-S009 | 历史 - 新增计数 | 添加历史后 | getNewHistoryCount() 返回新增数 | P1 |
+| UT-S010 | 历史 - 标记已读 | markHistorySeen() | getNewHistoryCount() 返回 0 | P1 |
+| UT-S011 | 偏好 - 保存主题 | savePreferences({ theme: 'dark' }) | getPreferences().theme === 'dark' | P0 |
+| UT-S012 | 偏好 - 保存翻译模式 | savePreferences({ translateMode: 'en' }) | getPreferences().translateMode === 'en' | P1 |
+| UT-S013 | 数据 - 导出 | exportData() | 返回包含 favorites 和 preferences 的对象 | P2 |
+| UT-S014 | 数据 - 导入 | importData(有效数据) | 收藏和偏好被正确恢复 | P2 |
 
-## 三、API-003 useNews.checkForUpdates()
+### 2.3 主题服务测试（useTheme.ts）
 
-### TC-003-01 正常路径 - 有新消息
-```typescript
-describe('useNews', () => {
-  it('should detect new updates', async () => {
-    // Given
-    vi.mock('axios', () => ({
-      head: vi.fn().mockResolvedValue({
-        headers: { 'last-modified': 'Mon, 13 Jul 2026 11:00:00 GMT' }
-      })
-    }))
-    
-    // When
-    const { checkForUpdates } = useNews()
-    const result = await checkForUpdates()
-    
-    // Then
-    expect(result.success).toBe(true)
-    expect(result.data?.hasNew).toBe(true)
-  })
-})
-```
+| 用例 ID | 测试项 | 操作 | 预期结果 | 优先级 |
+|:-------:|:-------|:-----|:---------|:------:|
+| UT-T001 | 初始化 - 默认主题 | initTheme() | 默认为 'auto' | P1 |
+| UT-T002 | 切换主题 - 亮色 | toggleTheme() 从暗到亮 | currentTheme.value === 'light' | P0 |
+| UT-T003 | 切换主题 - 暗色 | toggleTheme() 从亮到暗 | currentTheme.value === 'dark' | P0 |
+| UT-T004 | 自动模式 - 白天 | 模拟时间 12:00 | 应用亮色主题 | P1 |
+| UT-T005 | 自动模式 - 夜晚 | 模拟时间 20:00 | 应用暗色主题 | P1 |
 
-### TC-003-02 边界 - 无新消息
-```typescript
-it('should return no updates when data is up to date', async () => {
-  // Given
-  vi.mock('axios', () => ({
-    head: vi.fn().mockResolvedValue({
-      headers: { 'last-modified': 'Mon, 13 Jul 2026 10:00:00 GMT' }
-    })
-  }))
-  
-  // When
-  const { checkForUpdates } = useNews()
-  const result = await checkForUpdates()
-  
-  // Then
-  expect(result.success).toBe(true)
-  expect(result.data?.hasNew).toBe(false)
-})
-```
+### 2.4 翻译服务测试（useTranslate.ts）
 
-### TC-003-03 异常 - 检查失败
-```typescript
-it('should return error when check fails', async () => {
-  // Given
-  vi.mock('axios', () => ({
-    head: vi.fn().mockRejectedValue(new Error('Network error'))
-  }))
-  
-  // When
-  const { checkForUpdates } = useNews()
-  const result = await checkForUpdates()
-  
-  // Then
-  expect(result.success).toBe(false)
-  expect(result.error).toBe('1004')
-})
-```
+| 用例 ID | 测试项 | 操作 | 预期结果 | 优先级 |
+|:-------:|:-------|:-----|:---------|:------:|
+| UT-TR001 | 初始化 - 默认模式 | initTranslateMode() | 默认为 'zh' | P0 |
+| UT-TR002 | 切换模式 - 中→双 | toggleTranslateMode() 从 zh 开始 | 变为 'bilingual' | P0 |
+| UT-TR003 | 切换模式 - 双→英 | toggleTranslateMode() 从 bilingual 开始 | 变为 'en' | P0 |
+| UT-TR004 | 切换模式 - 英→中 | toggleTranslateMode() 从 en 开始 | 变为 'zh' | P0 |
+| UT-TR005 | 循环切换 | 连续 toggle 3 次 | 回到初始模式 | P0 |
+| UT-TR006 | 显示标题 - 中文模式 | getDisplayTitle({ title_zh: '中文标题' }) | 返回 '中文标题' | P0 |
+| UT-TR007 | 显示标题 - 英文模式 | getDisplayTitle({ title_en: 'English Title' }) | 返回 'English Title' | P0 |
+| UT-TR008 | 显示标题 - 双语模式 | getDisplayTitle({ title_bilingual: '中 / En' }) | 返回 '中 / En' | P0 |
+| UT-TR009 | 显示标题 - 降级策略 | 只有 title，没有 zh/en | 返回原始 title | P1 |
+
+### 2.5 日期校验测试（后端）
+
+| 用例 ID | 测试项 | 输入 | 预期输出 | 优先级 |
+|:-------:|:-------|:-----|:---------|:------:|
+| UT-D001 | 正常日期 | 发布时间 = 当前时间 - 1 天 | 使用原发布时间 | P0 |
+| UT-D002 | 未来日期 - 1 小时内 | 发布时间 = 当前时间 + 30 分钟 | 使用原发布时间（宽容度内） | P1 |
+| UT-D003 | 未来日期 - 超过 1 小时 | 发布时间 = 当前时间 + 2 小时 | 替换为当前时间 | P0 |
+| UT-D004 | 未来日期 - 1 天后 | 发布时间 = 当前时间 + 1 天 | 替换为当前时间 | P0 |
+| UT-D005 | null 日期 | publishedAt = null | 跳过校验 | P1 |
 
 ---
 
-## 四、API-004 useStorage.getFavorites()
+## 三、组件测试用例
 
-### TC-004-01 正常路径 - 返回收藏列表
-```typescript
-describe('useStorage', () => {
-  it('should return favorites list', () => {
-    // Given
-    const mockFavorites = [{ newsId: '1', title: 'News 1', savedAt: '2026-07-13' }]
-    vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(mockFavorites))
-    
-    // When
-    const { getFavorites } = useStorage()
-    const result = getFavorites()
-    
-    // Then
-    expect(result.length).toBe(1)
-    expect(result[0].newsId).toBe('1')
-  })
-})
-```
+### 3.1 NewsCard 组件
 
-### TC-004-02 边界 - 空收藏列表
-```typescript
-it('should return empty array when no favorites', () => {
-  // Given
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(null)
-  
-  // When
-  const { getFavorites } = useStorage()
-  const result = getFavorites()
-  
-  // Then
-  expect(result.length).toBe(0)
-})
-```
+| 用例 ID | 测试项 | 前置条件 | 操作 | 预期结果 | 优先级 |
+|:-------:|:-------|:---------|:-----|:---------|:------:|
+| CT-NC001 | 渲染标题 | 传入 news 数据 | 组件渲染，标题正确显示 | P0 |
+| CT-NC002 | 渲染来源 | 传入 news 数据 | 显示来源标签 | P0 |
+| CT-NC003 | 渲染时间 | 传入 news 数据 | 显示发布时间 | P0 |
+| CT-NC004 | 收藏按钮点击 | 未收藏状态 | 点击星标 | 触发 toggleFavorite | P0 |
+| CT-NC005 | 已读标记 | 已读新闻 | 渲染 | 显示"已读"标签 | P0 |
+| CT-NC006 | 翻译模式切换 | 中文模式 | 切换到英文模式 | 标题更新为英文 | P0 |
 
-### TC-004-03 异常 - localStorage 读取失败
-```typescript
-it('should handle localStorage error', () => {
-  // Given
-  vi.spyOn(localStorage, 'getItem').mockImplementation(() => {
-    throw new Error('Storage error')
-  })
-  
-  // When
-  const { getFavorites } = useStorage()
-  const result = getFavorites()
-  
-  // Then
-  expect(result.length).toBe(0)
-})
-```
+### 3.2 ScrollProgress 组件
+
+| 用例 ID | 测试项 | 前置条件 | 操作 | 预期结果 | 优先级 |
+|:-------:|:-------|:---------|:-----|:---------|:------:|
+| CT-SP001 | 初始隐藏 | 滚动位置 = 顶部 | 渲染 | 组件不可见 | P1 |
+| CT-SP002 | 滚动后显示 | 滚动超过 100px | - | 组件可见 | P1 |
+| CT-SP003 | 点击跳转 | 进度条可见 | 点击进度条中部 | 页面滚动到 50% 位置 | P1 |
+| CT-SP004 | 拖拽跳转 | 进度条可见 | 按住拖拽 | 页面跟随拖拽滚动 | P1 |
+| CT-SP005 | 回到顶部 | 进度条可见 | 点击顶部按钮 | 页面滚动到顶部 | P1 |
+| CT-SP006 | 跳到底部 | 进度条可见 | 点击底部按钮 | 页面滚动到底部 | P1 |
+| CT-SP007 | 百分比显示 | 滚动 50% 位置 | - | 显示 50% | P1 |
+
+### 3.3 FavoritesModal 组件
+
+| 用例 ID | 测试项 | 前置条件 | 操作 | 预期结果 | 优先级 |
+|:-------:|:-------|:---------|:-----|:---------|:------:|
+| CT-FM001 | 显示收藏列表 | 有收藏数据 | 打开弹窗 | 显示收藏列表 | P0 |
+| CT-FM002 | 单条删除 | 有收藏数据 | 点击删除按钮 | 该条被删除 | P0 |
+| CT-FM003 | 清空全部 | 有收藏数据 | 点击清空按钮 | 弹出确认弹窗 | P1 |
+| CT-FM004 | 确认清空 | 确认弹窗打开 | 点击确认 | 所有收藏被删除 | P1 |
+| CT-FM005 | 导出收藏 | 有收藏数据 | 点击导出 | 下载 JSON 文件 | P2 |
+| CT-FM006 | 关闭弹窗 | 弹窗打开 | 点击关闭/背景 | 弹窗关闭 | P1 |
 
 ---
 
-## 五、API-005 useStorage.toggleFavorite()
+## 四、集成测试用例
 
-### TC-005-01 正常路径 - 添加收藏
-```typescript
-describe('useStorage', () => {
-  it('should add news to favorites', () => {
-    // Given
-    vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify([]))
-    const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-    
-    // When
-    const { toggleFavorite } = useStorage()
-    const result = toggleFavorite({ id: '1', title: 'News 1', link: 'http://example.com', source: 'test' })
-    
-    // Then
-    expect(result.success).toBe(true)
-    expect(mockSetItem).toHaveBeenCalled()
-    expect(result.data?.favorites.length).toBe(1)
-  })
-})
-```
+### 4.1 核心流程测试
 
-### TC-005-02 边界 - 取消收藏
-```typescript
-it('should remove news from favorites', () => {
-  // Given
-  const existing = [{ newsId: '1', title: 'News 1', savedAt: '2026-07-13' }]
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(existing))
-  const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-  
-  // When
-  const { toggleFavorite } = useStorage()
-  const result = toggleFavorite({ id: '1', title: 'News 1', link: 'http://example.com', source: 'test' })
-  
-  // Then
-  expect(result.success).toBe(true)
-  expect(result.data?.favorites.length).toBe(0)
-})
-```
+| 用例 ID | 测试场景 | 操作步骤 | 预期结果 | 优先级 |
+|:-------:|:---------|:---------|:---------|:------:|
+| IT-001 | 首次加载页面 | 打开首页 | 1. 显示骨架屏<br>2. 加载完成显示新闻列表<br>3. 按时间倒序排列 | P0 |
+| IT-002 | 时间范围切换 | 点击"7天"按钮 | 1. 切换到 7 天数据<br>2. 新闻数量增加 | P0 |
+| IT-003 | 平台筛选 | 点击"Buzzing"标签 | 只显示 Buzzing 来源的新闻 | P0 |
+| IT-004 | 翻译模式切换 | 点击翻译按钮 | 1. 循环切换中/双/英<br>2. 标题对应变化 | P0 |
+| IT-005 | 主题切换 | 点击主题按钮 | 亮色/暗色主题切换 | P0 |
+| IT-006 | 收藏新闻 | 点击新闻卡片星标 | 1. 星标状态变化<br>2. 收藏计数 +1 | P0 |
+| IT-007 | 查看收藏 | 点击收藏按钮 | 1. 打开收藏弹窗<br>2. 显示收藏列表<br>3. 新增计数清零 | P1 |
+| IT-008 | 阅读新闻 | 点击新闻链接 | 1. 标记为已读<br>2. 历史计数 +1 | P0 |
+| IT-009 | 查看历史 | 点击历史按钮 | 1. 打开历史弹窗<br>2. 显示历史列表<br>3. 新增计数清零 | P1 |
+| IT-010 | 滚动进度条 | 向下滚动页面 | 1. 进度条出现<br>2. 百分比正确<br>3. 点击可跳转 | P1 |
 
-### TC-005-03 异常 - localStorage 容量不足
-```typescript
-it('should return error when storage is full', () => {
-  // Given
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify([]))
-  vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
-    throw new Error('Quota exceeded')
-  })
-  
-  // When
-  const { toggleFavorite } = useStorage()
-  const result = toggleFavorite({ id: '1', title: 'News 1', link: 'http://example.com', source: 'test' })
-  
-  // Then
-  expect(result.success).toBe(false)
-  expect(result.error).toBe('1002')
-})
-```
+### 4.2 边界情况测试
+
+| 用例 ID | 测试场景 | 操作 | 预期结果 | 优先级 |
+|:-------:|:---------|:-----|:---------|:------:|
+| IT-011 | 无网络环境 | 断网打开页面 | 显示缓存内容或错误提示 | P1 |
+| IT-012 | 空数据 | 数据为空 | 显示空状态提示 | P1 |
+| IT-013 | localStorage 满 | 存储已满 | 静默失败，不崩溃 | P2 |
+| IT-014 | 翻译数据缺失 | 没有翻译字段 | 降级显示原始标题 | P1 |
+| IT-015 | 未来日期新闻 | 发布时间 > 当前时间 | 显示抓取时间，不显示未来日期 | P0 |
 
 ---
 
-## 六、API-006 useStorage.getPreferences()
+## 五、性能测试
 
-### TC-006-01 正常路径 - 返回用户偏好
-```typescript
-describe('useStorage', () => {
-  it('should return user preferences', () => {
-    // Given
-    const mockPrefs = { enabledSources: ['arxiv'], theme: 'dark', soundEnabled: true }
-    vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(mockPrefs))
-    
-    // When
-    const { getPreferences } = useStorage()
-    const result = getPreferences()
-    
-    // Then
-    expect(result.theme).toBe('dark')
-    expect(result.soundEnabled).toBe(true)
-  })
-})
-```
+### 5.1 前端性能指标
 
-### TC-006-02 边界 - 返回默认偏好
-```typescript
-it('should return default preferences when none stored', () => {
-  // Given
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(null)
-  
-  // When
-  const { getPreferences } = useStorage()
-  const result = getPreferences()
-  
-  // Then
-  expect(result.theme).toBe('auto')
-  expect(result.soundEnabled).toBe(false)
-})
-```
+| 指标 | 目标值 | 测试方法 |
+|:-----|:------:|:---------|
+| 首屏加载时间 | ≤ 2 秒 | Lighthouse / Performance API |
+| FCP（First Contentful Paint） | ≤ 1 秒 | Lighthouse |
+| LCP（Largest Contentful Paint） | ≤ 2.5 秒 | Lighthouse |
+| TTI（Time to Interactive） | ≤ 3 秒 | Lighthouse |
+| 滚动帧率 | ≥ 60 FPS | Chrome DevTools Performance |
+| 内存占用 | ≤ 100MB（1000条新闻） | Chrome DevTools Memory |
 
-### TC-006-03 异常 - 数据格式错误
-```typescript
-it('should return defaults when data is corrupted', () => {
-  // Given
-  vi.spyOn(localStorage, 'getItem').mockReturnValue('invalid json')
-  
-  // When
-  const { getPreferences } = useStorage()
-  const result = getPreferences()
-  
-  // Then
-  expect(result.theme).toBe('auto')
-})
-```
+### 5.2 后端性能指标
+
+| 指标 | 目标值 | 测试方法 |
+|:-----|:------:|:---------|
+| 单次抓取耗时 | ≤ 5 分钟 | 脚本执行时间 |
+| 翻译成功率 | ≥ 95% | 统计成功翻译数 / 待翻译数 |
+| 输出文件大小 | 24h ≤ 500KB | 文件大小统计 |
+| 内存峰值 | ≤ 200MB | Node.js 内存监控 |
 
 ---
 
-## 七、API-007 useStorage.savePreferences()
+## 六、兼容性测试
 
-### TC-007-01 正常路径 - 保存偏好
-```typescript
-describe('useStorage', () => {
-  it('should save preferences', () => {
-    // Given
-    const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-    
-    // When
-    const { savePreferences } = useStorage()
-    const result = savePreferences({ theme: 'dark', soundEnabled: true })
-    
-    // Then
-    expect(result.success).toBe(true)
-    expect(mockSetItem).toHaveBeenCalled()
-  })
-})
-```
+### 6.1 浏览器兼容性
 
-### TC-007-02 边界 - 部分更新
-```typescript
-it('should update only provided fields', () => {
-  // Given
-  const existing = { enabledSources: ['arxiv'], theme: 'auto', soundEnabled: false }
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(existing))
-  const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-  
-  // When
-  const { savePreferences } = useStorage()
-  const result = savePreferences({ theme: 'dark' })
-  
-  // Then
-  expect(result.success).toBe(true)
-})
-```
+| 浏览器 | 版本 | 测试范围 | 优先级 |
+|:-------|:-----|:---------|:------:|
+| Chrome | ≥ 90 | 全功能 | P0 |
+| Safari | ≥ 14 | 全功能 | P0 |
+| Edge | ≥ 90 | 全功能 | P1 |
+| Firefox | ≥ 88 | 核心功能 | P2 |
 
-### TC-007-03 异常 - 存储失败
-```typescript
-it('should return error when save fails', () => {
-  // Given
-  vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
-    throw new Error('Storage error')
-  })
-  
-  // When
-  const { savePreferences } = useStorage()
-  const result = savePreferences({ theme: 'dark' })
-  
-  // Then
-  expect(result.success).toBe(false)
-  expect(result.error).toBe('1002')
-})
-```
+### 6.2 移动端兼容性
+
+| 平台 | 浏览器 | 测试范围 | 优先级 |
+|:-----|:-------|:---------|:------:|
+| iOS | Safari | 全功能 | P0 |
+| Android | Chrome | 全功能 | P0 |
+| iOS | Chrome | 核心功能 | P2 |
+| Android | Firefox | 核心功能 | P2 |
+
+### 6.3 PWA 兼容性
+
+| 功能 | Chrome | Safari | Edge | 优先级 |
+|:-----|:------:|:------:|:----:|:------:|
+| 添加到主屏幕 | ✅ | ✅ | ✅ | P0 |
+| 离线访问 | ✅ | ✅ | ✅ | P1 |
+| 推送通知 | ✅ | ✅ | ✅ | P2 |
 
 ---
 
-## 八、API-008 useStorage.exportData()
+## 七、测试执行计划
 
-### TC-008-01 正常路径 - 导出数据
-```typescript
-describe('useStorage', () => {
-  it('should export all data', () => {
-    // Given
-    const mockFavorites = [{ newsId: '1', title: 'News 1' }]
-    const mockPrefs = { theme: 'auto' }
-    vi.spyOn(localStorage, 'getItem')
-      .mockImplementation((key) => 
-        key === 'ai-news-favorites' ? JSON.stringify(mockFavorites) : JSON.stringify(mockPrefs)
-      )
-    
-    // When
-    const { exportData } = useStorage()
-    const result = exportData()
-    
-    // Then
-    expect(result.success).toBe(true)
-    expect(result.data?.favorites.length).toBe(1)
-    expect(result.data?.preferences.theme).toBe('auto')
-  })
-})
-```
+### 7.1 自动化测试
 
-### TC-008-02 边界 - 空数据导出
-```typescript
-it('should export empty data when nothing stored', () => {
-  // Given
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(null)
-  
-  // When
-  const { exportData } = useStorage()
-  const result = exportData()
-  
-  // Then
-  expect(result.success).toBe(true)
-  expect(result.data?.favorites.length).toBe(0)
-})
-```
-
-### TC-008-03 异常 - 读取失败
-```typescript
-it('should handle read error gracefully', () => {
-  // Given
-  vi.spyOn(localStorage, 'getItem').mockImplementation(() => {
-    throw new Error('Storage error')
-  })
-  
-  // When
-  const { exportData } = useStorage()
-  const result = exportData()
-  
-  // Then
-  expect(result.success).toBe(true)
-  expect(result.data?.favorites.length).toBe(0)
-})
-```
-
----
-
-## 九、API-009 useStorage.importData()
-
-### TC-009-01 正常路径 - 导入数据
-```typescript
-describe('useStorage', () => {
-  it('should import data successfully', () => {
-    // Given
-    const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-    const importData = {
-      favorites: [{ newsId: '1', title: 'News 1' }],
-      preferences: { theme: 'dark' }
-    }
-    
-    // When
-    const { importData: importFn } = useStorage()
-    const result = importFn(importData)
-    
-    // Then
-    expect(result.success).toBe(true)
-    expect(mockSetItem).toHaveBeenCalledTimes(2)
-  })
-})
-```
-
-### TC-009-02 边界 - 空数据导入
-```typescript
-it('should handle empty import data', () => {
-  // Given
-  const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-  
-  // When
-  const { importData: importFn } = useStorage()
-  const result = importFn({ favorites: [], preferences: { theme: 'auto' } })
-  
-  // Then
-  expect(result.success).toBe(true)
-})
-```
-
-### TC-009-03 异常 - 数据格式错误
-```typescript
-it('should return error for invalid data format', () => {
-  // Given
-  const invalidData = { favorites: 'not-an-array', preferences: {} }
-  
-  // When
-  const { importData: importFn } = useStorage()
-  const result = importFn(invalidData)
-  
-  // Then
-  expect(result.success).toBe(false)
-  expect(result.error).toBe('1003')
-})
-```
-
----
-
-## 十、API-010 useSound.playNotification()
-
-### TC-010-01 正常路径 - 播放音效
-```typescript
-describe('useSound', () => {
-  it('should play notification sound', () => {
-    // Given
-    const mockPrefs = { soundEnabled: true }
-    vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(mockPrefs))
-    
-    // When
-    const { playNotification } = useSound()
-    const result = playNotification()
-    
-    // Then
-    expect(result.success).toBe(true)
-  })
-})
-```
-
-### TC-010-02 边界 - 音效未开启
-```typescript
-it('should not play when sound is disabled', () => {
-  // Given
-  const mockPrefs = { soundEnabled: false }
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(mockPrefs))
-  
-  // When
-  const { playNotification } = useSound()
-  const result = playNotification()
-  
-  // Then
-  expect(result.success).toBe(false)
-  expect(result.message).toBe('音效未开启')
-})
-```
-
-### TC-010-03 异常 - 浏览器不支持 AudioContext
-```typescript
-it('should handle browser without AudioContext', () => {
-  // Given
-  const mockPrefs = { soundEnabled: true }
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(mockPrefs))
-  global.AudioContext = undefined as any
-  
-  // When
-  const { playNotification } = useSound()
-  const result = playNotification()
-  
-  // Then
-  expect(result.success).toBe(false)
-})
-```
-
----
-
-## 十一、API-011 useSound.detectBreakingNews()
-
-### TC-011-01 正常路径 - 检测到突发新闻
-```typescript
-describe('useSound', () => {
-  it('should detect breaking news', () => {
-    // Given
-    const news = { title: 'GPT-5 重磅发布', pubDate: '2026-07-13T10:30:00Z' }
-    
-    // When
-    const { detectBreakingNews } = useSound()
-    const result = detectBreakingNews(news)
-    
-    // Then
-    expect(result.isBreaking).toBe(true)
-  })
-})
-```
-
-### TC-011-02 边界 - 未检测到突发新闻
-```typescript
-it('should not detect non-breaking news', () => {
-  // Given
-  const news = { title: 'AI入门教程', pubDate: '2026-07-13T10:30:00Z' }
-  
-  // When
-  const { detectBreakingNews } = useSound()
-  const result = detectBreakingNews(news)
-  
-  // Then
-  expect(result.isBreaking).toBe(false)
-})
-```
-
-### TC-011-03 异常 - 空标题
-```typescript
-it('should handle empty title', () => {
-  // Given
-  const news = { title: '', pubDate: '2026-07-13T10:30:00Z' }
-  
-  // When
-  const { detectBreakingNews } = useSound()
-  const result = detectBreakingNews(news)
-  
-  // Then
-  expect(result.isBreaking).toBe(false)
-})
-```
-
----
-
-## 十二、API-012 useTheme.toggleTheme()
-
-### TC-012-01 正常路径 - 切换主题
-```typescript
-describe('useTheme', () => {
-  it('should toggle theme to dark', () => {
-    // Given
-    const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-    
-    // When
-    const { toggleTheme } = useTheme()
-    const result = toggleTheme('dark')
-    
-    // Then
-    expect(result.success).toBe(true)
-    expect(result.data?.currentTheme).toBe('dark')
-  })
-})
-```
-
-### TC-012-02 边界 - 自动模式切换
-```typescript
-it('should cycle through themes when no mode provided', () => {
-  // Given
-  const mockPrefs = { theme: 'auto' }
-  vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(mockPrefs))
-  const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-  
-  // When
-  const { toggleTheme } = useTheme()
-  const result = toggleTheme()
-  
-  // Then
-  expect(result.success).toBe(true)
-})
-```
-
-### TC-012-03 异常 - 无效主题值
-```typescript
-it('should use default when invalid theme provided', () => {
-  // Given
-  const mockSetItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {})
-  
-  // When
-  const { toggleTheme } = useTheme()
-  const result = toggleTheme('invalid' as any)
-  
-  // Then
-  expect(result.success).toBe(true)
-  expect(result.data?.currentTheme).toBe('auto')
-})
-```
-
----
-
-## 十三、API-013 utils.formatTime()
-
-### TC-013-01 正常路径 - 格式化相对时间
-```typescript
-describe('utils', () => {
-  it('should format time correctly', () => {
-    // Given
-    const now = new Date()
-    const oneMinuteAgo = new Date(now.getTime() - 60000).toISOString()
-    
-    // When
-    const result = formatTime(oneMinuteAgo)
-    
-    // Then
-    expect(result).toBe('1分钟前')
-  })
-})
-```
-
-### TC-013-02 边界 - 刚刚发布
-```typescript
-it('should return "刚刚" for very recent', () => {
-  // Given
-  const justNow = new Date().toISOString()
-  
-  // When
-  const result = formatTime(justNow)
-  
-  // Then
-  expect(result).toBe('刚刚')
-})
-```
-
-### TC-013-03 异常 - 无效日期格式
-```typescript
-it('should handle invalid date', () => {
-  // Given
-  const invalidDate = 'invalid-date'
-  
-  // When
-  const result = formatTime(invalidDate)
-  
-  // Then
-  expect(result).toBe('未知时间')
-})
-```
-
----
-
-## 十四、API-014 HTTP GET /data/news.json
-
-### TC-014-01 正常路径 - 返回新闻数据
 ```bash
-curl -s http://localhost:5173/data/news.json | head -c 500
-```
-预期：返回 JSON 数组，包含新闻对象
+# 运行所有单元测试
+npm run test
 
-### TC-014-02 边界 - 空数据
-```bash
-# 测试空文件情况
-curl -s http://localhost:5173/data/news.json
-```
-预期：返回 `[]`
+# 运行测试并生成覆盖率报告
+npm run test -- --coverage
 
-### TC-014-03 异常 - 文件不存在
-```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:5173/data/missing.json
+# 运行类型检查
+npm run typecheck
+
+# 运行 lint 检查
+npm run lint
 ```
-预期：返回 404
+
+### 7.2 手动测试清单
+
+发布前需手动验证以下功能：
+- [ ] 页面首次加载正常，显示新闻列表
+- [ ] 24h / 7 天切换正常
+- [ ] 平台筛选功能正常
+- [ ] 翻译模式切换正常（中/双/英）
+- [ ] 主题切换正常（亮/暗）
+- [ ] 收藏功能正常
+- [ ] 历史记录功能正常
+- [ ] 滚动进度条交互正常
+- [ ] 移动端响应式布局正常
+- [ ] PWA 可安装
+- [ ] 未来日期不显示（日期校验生效）
 
 ---
 
-## 十五、API-015 HTTP GET /data/sources.json
+## 八、缺陷严重等级定义
 
-### TC-015-01 正常路径 - 返回信息源数据
-```bash
-curl -s http://localhost:5173/data/sources.json | head -c 500
-```
-预期：返回 JSON 数组，包含信息源对象
-
-### TC-015-02 边界 - 空数据源
-```bash
-curl -s http://localhost:5173/data/sources.json
-```
-预期：返回 `[]`
-
-### TC-015-03 异常 - 文件不存在
-```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:5173/data/missing.json
-```
-预期：返回 404
-
----
-
-## 三、覆盖率矩阵
-
-| 接口 | 正常用例 | 边界用例 | 异常用例 | 总数 |
-|---|---|---|---|---|
-| API-001 | 1 | 1 | 1 | 3 |
-| API-002 | 1 | 1 | 1 | 3 |
-| API-003 | 1 | 1 | 1 | 3 |
-| API-004 | 1 | 1 | 1 | 3 |
-| API-005 | 1 | 1 | 1 | 3 |
-| API-006 | 1 | 1 | 1 | 3 |
-| API-007 | 1 | 1 | 1 | 3 |
-| API-008 | 1 | 1 | 1 | 3 |
-| API-009 | 1 | 1 | 1 | 3 |
-| API-010 | 1 | 1 | 1 | 3 |
-| API-011 | 1 | 1 | 1 | 3 |
-| API-012 | 1 | 1 | 1 | 3 |
-| API-013 | 1 | 1 | 1 | 3 |
-| API-014 | 1 | 1 | 1 | 3 |
-| API-015 | 1 | 1 | 1 | 3 |
-| **合计** | 15 | 15 | 15 | **45** |
-
----
-
-## 四、版本历史
-
-| 版本 | 日期 | 变更 | 作者 |
-|---|---|---|---|
-| v1.0 | 2026-07-13 | 初稿 | AI-TL |
+| 等级 | 定义 | 示例 | 修复时限 |
+|:-----|:-----|:-----|:---------|
+| P0 - 致命 | 主流程阻塞，核心功能不可用 | 页面白屏、数据加载失败 | 立即修复 |
+| P1 - 严重 | 主要功能异常，无 workaround | 收藏失败、翻译不切换 | 24 小时内 |
+| P2 - 一般 | 次要功能异常，有 workaround | 计数显示不准确、UI 小瑕疵 | 版本迭代 |
+| P3 - 轻微 | 体验优化、文案问题 | 动画不够流畅、文字错字 | 按需修复 |

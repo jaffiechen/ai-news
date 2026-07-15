@@ -1,50 +1,70 @@
-<script setup lang="ts">import { ref, onMounted, onUnmounted } from 'vue';
-import type { News, Source, ApiResponse } from '@/types';
-import NewsCard from '@/components/cards/NewsCard.vue';
-import SkeletonScreen from '@/components/common/SkeletonScreen.vue';
-import { useSound } from '@/composables/useSound';
-import { config } from '@/config';
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import type { News, ApiResponse } from '@/types'
+import NewsCard from '@/components/cards/NewsCard.vue'
+import SkeletonScreen from '@/components/common/SkeletonScreen.vue'
+import { useSound } from '@/composables/useSound'
+import { config } from '@/config'
+import { formatDate } from '@/utils/format'
+
 const props = defineProps<{
- newsList: News[];
- sources: Source[];
- loading: boolean;
- checkForUpdates: () => Promise<ApiResponse<{ hasNew: boolean; count: number }>>;
- refreshNews: () => Promise<ApiResponse<{ news: News[]; total: number }>>;
-}>();
+  newsList: News[]
+  loading: boolean
+  checkForUpdates: () => Promise<ApiResponse<{ hasNew: boolean; count: number }>>
+  refreshNews: () => Promise<ApiResponse<{ news: News[]; total: number }>>
+}>()
+
 const emit = defineEmits<{
- refresh: [
- ];
-}>();
-const { playNotification, detectBreakingNews } = useSound();
-const hasNew = ref(false);
-const newCount = ref(0);
-const showUpdateBanner = ref(false);
-let updateInterval: number | null = null;
+  refresh: []
+}>()
+
+const { playNotification, detectBreakingNews } = useSound()
+
+const hasNew = ref(false)
+const newCount = ref(0)
+const showUpdateBanner = ref(false)
+let updateInterval: number | null = null
+
+const groupedNews = computed(() => {
+  const groups: Record<string, News[]> = {}
+  props.newsList.forEach(news => {
+    const date = formatDate(news.published_at || news.first_seen_at)
+    if (!groups[date]) {
+      groups[date] = []
+    }
+    groups[date].push(news)
+  })
+  return Object.entries(groups).map(([date, news]) => ({ date, news }))
+})
+
 async function checkUpdates() {
- const result = await props.checkForUpdates();
- if (result.success && result.data?.hasNew) {
- hasNew.value = true;
- newCount.value = result.data.count;
- showUpdateBanner.value = true;
- const breakingNews = props.newsList.find(n => detectBreakingNews(n).isBreaking);
- if (breakingNews) {
- playNotification();
- }
- }
+  const result = await props.checkForUpdates()
+  if (result.success && result.data?.hasNew) {
+    hasNew.value = true
+    newCount.value = result.data.count
+    showUpdateBanner.value = true
+    const breakingNews = props.newsList.find(n => detectBreakingNews(n).isBreaking)
+    if (breakingNews) {
+      playNotification()
+    }
+  }
 }
+
 async function handleRefresh() {
- showUpdateBanner.value = false;
- await props.refreshNews();
- emit('refresh');
+  showUpdateBanner.value = false
+  await props.refreshNews()
+  emit('refresh')
 }
+
 onMounted(() => {
- updateInterval = window.setInterval(checkUpdates, config.updateInterval);
-});
+  updateInterval = window.setInterval(checkUpdates, config.updateInterval)
+})
+
 onUnmounted(() => {
- if (updateInterval) {
- clearInterval(updateInterval);
- }
-});
+  if (updateInterval) {
+    clearInterval(updateInterval)
+  }
+})
 </script>
 
 <template>
@@ -60,7 +80,7 @@ onUnmounted(() => {
       </div>
     </Transition>
 
-    <div class="pt-16">
+    <div>
       <div v-if="loading" class="space-y-4">
         <SkeletonScreen v-for="i in 5" :key="i" />
       </div>
@@ -72,16 +92,18 @@ onUnmounted(() => {
       </div>
 
       <div v-else class="relative">
-        <div class="absolute left-[13px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-400 via-gray-200 dark:via-gray-700 to-transparent"></div>
-        <div class="space-y-0">
-          <NewsCard 
-            v-for="(news, index) in newsList" 
-            :key="news.id"
-            :news="news"
-            :sources="sources"
-            :is-first="index === 0"
-            :is-last="index === newsList.length - 1"
-          />
+        <div>
+          <div v-for="(group, groupIndex) in groupedNews" :key="group.date">
+            <NewsCard 
+              v-for="(news, newsIndex) in group.news" 
+              :key="news.id"
+              :news="news"
+              :show-date="newsIndex === 0"
+              :is-last="groupIndex === groupedNews.length - 1 && newsIndex === group.news.length - 1"
+              :is-first-in-group="newsIndex === 0"
+              :is-last-in-group="newsIndex === group.news.length - 1"
+            />
+          </div>
         </div>
       </div>
     </div>

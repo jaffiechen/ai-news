@@ -1,6 +1,7 @@
 # AI快讯 - 详细设计文档（SDD）
 
-> 生成日期：2026-07-13
+> 文档版本：v2.0.0
+> 生成日期：2026-07-15
 > 阶段：③ /sdd
 > 上游：PRD.md + ARCH.md
 > 下游：impl（代码实现）
@@ -9,493 +10,451 @@
 
 ## 〇、模块清单总览
 
-| 模块 ID | 名称 | 路径 | 规模预估 |
-|---|---|---|---|
-| M-001 | 配置中心 | `src/config/` | 小型 |
-| M-002 | 数据访问层 | `src/composables/useNews.ts` | 中型 |
-| M-003 | 应用入口 | `src/main.ts` | 小型 |
-| M-004 | 统一响应 / 错误 | `src/utils/response.ts` | 小型 |
-| M-005 | 存储服务 | `src/composables/useStorage.ts` | 中型 |
-| M-006 | 音效服务 | `src/composables/useSound.ts` | 小型 |
-| M-007 | 主题服务 | `src/composables/useTheme.ts` | 小型 |
-| M-008 | 时间轴模块 | `src/components/timeline/` | 中型 |
-| M-009 | 新闻卡片模块 | `src/components/cards/` | 中型 |
-| M-010 | 设置面板模块 | `src/components/settings/` | 中型 |
-| M-011 | PWA 配置 | `public/manifest.json` + `src/service-worker.ts` | 小型 |
-| M-012 | RSS聚合工作流 | `.github/workflows/rss-update.yml` | 小型 |
+| 模块 ID | 名称 | 路径 | 规模 | 优先级 |
+|:-------:|:-----|:-----|:----:|:------:|
+| M-001 | 配置中心 | `src/config/index.ts` | 小型 | P0 |
+| M-002 | 数据访问层 | `src/composables/useNews.ts` | 中型 | P0 |
+| M-003 | 存储服务 | `src/composables/useStorage.ts` | 中型 | P0 |
+| M-004 | 主题服务 | `src/composables/useTheme.ts` | 小型 | P1 |
+| M-005 | 音效服务 | `src/composables/useSound.ts` | 小型 | P1 |
+| M-006 | 翻译服务 | `src/composables/useTranslate.ts` | 小型 | P0 |
+| M-007 | 时间轴模块 | `src/components/timeline/Timeline.vue` | 中型 | P0 |
+| M-008 | 新闻卡片模块 | `src/components/cards/NewsCard.vue` | 中型 | P0 |
+| M-009 | 滚动进度条 | `src/components/common/ScrollProgress.vue` | 小型 | P1 |
+| M-010 | 收藏弹窗 | `src/components/settings/FavoritesModal.vue` | 中型 | P1 |
+| M-011 | 历史记录弹窗 | `src/components/settings/HistoryModal.vue` | 中型 | P1 |
+| M-012 | 来源管理弹窗 | `src/components/settings/SourceModal.vue` | 中型 | P1 |
+| M-013 | 设置面板 | `src/components/settings/Settings.vue` | 中型 | P1 |
+| M-014 | 骨架屏 | `src/components/common/SkeletonScreen.vue` | 小型 | P1 |
+| M-015 | 后端抓取主入口 | `scripts/fetcher/index.ts` | 大型 | P0 |
+| M-016 | 抓取器集合 | `scripts/fetcher/fetchers/` | 大型 | P0 |
+| M-017 | 过滤器 | `scripts/fetcher/filters/` | 中型 | P0 |
+| M-018 | 翻译模块 | `scripts/fetcher/translate.ts` | 中型 | P0 |
+| M-019 | 工具函数 | `scripts/fetcher/utils/` | 中型 | P0 |
+| M-020 | CI/CD 工作流 | `.github/workflows/rss-update.yml` | 小型 | P1 |
 
 ---
 
 ## 一、模块 M-001 配置中心
 
 ### 1.1 配置项设计
-| 配置项 | 类型 | 默认 | 说明 | 来源 |
-|---|---|---|---|---|
-| newsApiUrl | string | `/data/news.json` | 新闻数据接口地址 | 环境变量/配置文件 |
-| sourcesApiUrl | string | `/data/sources.json` | 信息源配置地址 | 环境变量/配置文件 |
-| updateInterval | number | 900000 | 自动检查更新间隔（毫秒），默认15分钟 | 配置文件 |
-| breakingKeywords | string[] | `['GPT-5', '发布', '开源', '重磅', '突破性']` | 突发新闻关键词列表 | 配置文件 |
-| localStoragePrefix | string | `ai-news` | localStorage键名前缀 | 配置文件 |
-| themeAutoStartHour | number | 6 | 自动黑夜模式开始时间（小时） | 配置文件 |
-| themeAutoEndHour | number | 18 | 自动黑夜模式结束时间（小时） | 配置文件 |
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|:-------|:-----|:-------|:-----|
+| `newsApiUrl24h` | string | `/data/latest-24h.json` | 24 小时新闻数据接口 |
+| `newsApiUrl7d` | string | `/data/latest-7d.json` | 7 天新闻数据接口 |
+| `sourcesApiUrl` | string | `/data/sources.json` | 信息源配置地址 |
+| `updateInterval` | number | 7200000 | 自动检查更新间隔（毫秒），默认 2 小时 |
+| `breakingKeywords` | string[] | `['GPT-5', '发布', '开源', '重磅', '突破性', '首次', '里程碑']` | 突发新闻关键词 |
+| `localStoragePrefix` | string | `ai-news` | localStorage 键名前缀 |
+| `themeAutoStartHour` | number | 6 | 自动亮色模式开始时间（小时） |
+| `themeAutoEndHour` | number | 18 | 自动亮色模式结束时间（小时） |
+| `maxHistory` | number | 100 | 最大历史记录条数 |
 
 ### 1.2 边界条件
 - 配置文件缺失时使用硬编码默认值
-- updateInterval 最小值限制为 60000（1分钟），防止频繁请求
+- `updateInterval` 最小值限制为 300000（5 分钟），防止频繁请求
+- `maxHistory` 最小值限制为 10，避免过少无意义
 
 ---
 
-## 二、模块 M-002 数据访问层
+## 二、模块 M-002 数据访问层（useNews）
 
 ### 2.1 接口签名
+
 ```typescript
-loadNews(): Promise<ApiResponse<{ news: News[]; total: number }>>
-filterBySources(sources: string[]): News[]
-checkForUpdates(): Promise<ApiResponse<{ hasNew: boolean; count: number }>>
-getSources(): Promise<ApiResponse<Source[]>>
-```
-
-### 2.2 算法伪代码（loadNews）
-```
-输入：无
-1. 记录开始时间
-2. try:
-3.     发起 HTTP GET 请求获取 news.json
-4.     解析 JSON 响应
-5.     按 pubDate 降序排序新闻列表
-6.     返回 { success: true, data: { news: [...], total: count } }
-7. except 网络错误 as e:
-8.     记录日志 e
-9.     返回 { success: false, error: '1004', message: '网络错误' }
-10. except 解析错误 as e:
-11.    记录日志 e
-12.    返回 { success: false, error: '1001', message: '数据加载失败' }
-13. finally:
-14.    计算耗时，记录性能日志
-```
-
-### 2.3 算法伪代码（filterBySources）
-```
-输入：sources - 启用的信息源ID列表
-1. 如果 sources 为空数组：返回全部新闻
-2. 遍历新闻列表
-3. 过滤出 source 字段在 sources 列表中的新闻
-4. 返回过滤后的列表
-```
-
-### 2.4 算法伪代码（checkForUpdates）
-```
-输入：无
-1. 获取本地存储的上次更新时间
-2. try:
-3.     发起 HTTP HEAD 请求获取 news.json 的 Last-Modified
-4.     对比服务器时间与本地时间
-5.     如果服务器时间更新：
-6.         计算新新闻数量（可选：重新获取新闻列表对比）
-7.         返回 { success: true, data: { hasNew: true, count: N } }
-8.     否则：
-9.         返回 { success: true, data: { hasNew: false, count: 0 } }
-10. except:
-11.    返回 { success: false, error: '1004', message: '检查更新失败' }
-```
-
-### 2.5 边界条件清单
-- [ ] news.json 返回空数组 → 返回空列表，不报错
-- [ ] 网络超时（10秒）→ 返回错误码1004
-- [ ] JSON格式错误 → 返回错误码1001
-- [ ] sources 参数为空 → 返回全部新闻
-- [ ] sources 参数包含不存在的ID → 忽略无效ID
-
----
-
-## 三、模块 M-003 应用入口
-
-### 3.1 初始化流程伪代码
-```
-1. 导入 Vue 3 和根组件 App.vue
-2. 导入全局样式 style.css
-3. 初始化 Vue 应用实例
-4. 配置路由（如需要）
-5. 挂载到 #app 元素
-6. 初始化 PWA Service Worker
-7. 加载用户偏好设置
-8. 根据偏好设置主题
-```
-
-### 3.2 边界条件
-- DOM 中无 #app 元素 → 控制台报错，不启动
-- Service Worker 注册失败 → 记录日志，继续启动
-
----
-
-## 四、模块 M-004 统一响应 / 错误
-
-### 4.1 响应结构定义
-```typescript
-interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
+interface UseNewsReturn {
+  news: Ref<News[]>;                    // 新闻列表
+  stats: Ref<NewsStats | null>;        // 统计数据
+  loading: Ref<boolean>;                // 加载状态
+  error: Ref<string | null>;            // 错误信息
+  timeRange: Ref<'24h' | '7d'>;          // 时间范围
+  totalItems: Ref<number>;              // 总条数
+  
+  loadNews(): Promise<void>;             // 加载新闻
+  setTimeRange(range: '24h' | '7d'): void;  // 设置时间范围
+  filterBySources(sources: string[]): News[];  // 按来源筛选
+  searchNews(keyword: string): News[];  // 搜索新闻
+  checkForUpdates(): Promise<boolean>;  // 检查更新
+  preload7dData(): Promise<void>;       // 预加载 7 天数据
 }
 ```
 
-### 4.2 错误码对照表
-| 错误码 | 含义 | HTTP状态码（如适用） |
-|---|---|---|
-| 0 | 成功 | 200 |
-| 1001 | 数据加载失败 | 500 |
-| 1002 | 存储操作失败 | 500 |
-| 1003 | 参数错误 | 400 |
-| 1004 | 网络错误 | 0 |
+### 2.2 核心算法
 
-### 4.3 错误处理流程
+#### 2.2.1 数据加载流程
 ```
-1. 捕获异常
-2. 根据异常类型映射到错误码
-3. 记录日志
-4. 返回标准化错误响应
-```
+输入：timeRange ('24h' | '7d')
+输出：void（更新 news ref）
 
----
-
-## 五、模块 M-005 存储服务
-
-### 5.1 接口签名
-```typescript
-getFavorites(): Favorite[]
-toggleFavorite(news: News): ApiResponse<{ favorites: Favorite[] }>
-getPreferences(): UserPreference
-savePreferences(prefs: Partial<UserPreference>): ApiResponse<void>
-exportData(): ApiResponse<{ favorites: Favorite[]; preferences: UserPreference }>
-importData(data: { favorites: Favorite[]; preferences: UserPreference }): ApiResponse<void>
+1. 设置 loading = true
+2. 构造 URL：timeRange === '24h' ? newsApiUrl24h : newsApiUrl7d
+3. fetch 请求 JSON 数据
+4. 解析数据，提取 items 数组
+5. 按 published_at 降序排序
+6. 更新 news ref
+7. 更新 stats 统计数据
+8. 设置 loading = false
+9. 异常处理：设置 error，loading = false
 ```
 
-### 5.2 算法伪代码（toggleFavorite）
-```
-输入：news - 新闻对象
-1. 获取当前收藏列表
-2. 检查该新闻是否已在收藏中
-3. 如果已收藏：
-4.     从列表中移除该新闻
-5. 否则：
-6.     创建新的 Favorite 对象（newsId, title, link, source, savedAt）
-7.     添加到收藏列表
-8. 序列化并保存到 localStorage
-9. 返回更新后的收藏列表
-```
-
-### 5.3 算法伪代码（importData）
-```
-输入：data - 导入的数据对象
-1. 校验数据格式：
-2.     favorites 必须是数组
-3.     preferences 必须包含 theme 字段
-4. 如果格式错误：返回错误码1003
-5. try:
-6.     将数据序列化并保存到 localStorage
-7.     返回 { success: true }
-8. except:
-9.     返回 { success: false, error: '1002', message: '导入失败' }
-```
-
-### 5.4 边界条件清单
-- [ ] localStorage 容量不足 → 返回错误码1002
-- [ ] 导入数据格式错误 → 返回错误码1003
-- [ ] 收藏列表为空 → 返回空数组
-- [ ] preferences 缺失 → 返回默认偏好配置
-
----
-
-## 六、模块 M-006 音效服务
-
-### 6.1 接口签名
-```typescript
-playNotification(): ApiResponse<void>
-detectBreakingNews(news: News): { isBreaking: boolean }
-```
-
-### 6.2 算法伪代码（detectBreakingNews）
-```
-输入：news - 新闻对象
-1. 获取配置中的 breakingKeywords 列表
-2. 将新闻标题转换为小写
-3. 遍历 breakingKeywords：
-4.     如果标题包含任意关键词：
-5.         返回 { isBreaking: true }
-6. 返回 { isBreaking: false }
-```
-
-### 6.3 算法伪代码（playNotification）
+#### 2.2.2 更新检测算法
 ```
 输入：无
-1. 检查用户偏好中 soundEnabled 是否为 true
-2. 如果未启用：返回 { success: false, message: '音效未开启' }
-3. 创建 AudioContext
-4. 生成"叮咚"提示音（频率约800Hz，时长0.3秒）
-5. 播放音效
-6. 返回 { success: true }
+输出：boolean（是否有更新）
+
+1. 获取当前最新新闻的 last_seen_at
+2. 请求数据接口（仅 header，或轻量请求）
+3. 对比返回数据的 generated_at
+4. 若新数据时间更新，则返回 true
 ```
 
-### 6.4 边界条件清单
-- [ ] 用户浏览器不支持 AudioContext → 静默失败
-- [ ] 关键词列表为空 → 返回 isBreaking: false
-- [ ] 新闻标题为空 → 返回 isBreaking: false
+### 2.3 数据结构
 
----
-
-## 七、模块 M-007 主题服务
-
-### 7.1 接口签名
 ```typescript
-toggleTheme(mode?: 'light' | 'dark' | 'auto'): ApiResponse<{ currentTheme: string }>
-getCurrentTheme(): string
-applyTheme(theme: string): void
-```
+interface NewsStats {
+  totalItems: number;
+  totalItemsRaw: number;
+  siteCount: number;
+  sourceCount: number;
+  generatedAt: string;
+  siteStats: SiteStat[];
+}
 
-### 7.2 算法伪代码（toggleTheme）
-```
-输入：mode - 主题模式，可选
-1. 如果 mode 未提供：
-2.     当前主题循环切换（auto → light → dark → auto）
-3. 否则：
-4.     使用传入的 mode
-5. 保存到用户偏好
-6. 应用主题到 DOM
-7. 返回 { success: true, data: { currentTheme: mode } }
-```
-
-### 7.3 算法伪代码（applyTheme）
-```
-输入：theme - 主题名称
-1. 如果 theme 为 'auto'：
-2.     获取当前时间（小时）
-3.     如果时间在 6-18 之间：应用 light
-4.     否则：应用 dark
-5. 否则：
-6.     直接应用 theme
-7. 给 <html> 标签添加对应类名
-```
-
-### 7.4 边界条件清单
-- [ ] 无效的 theme 值 → 使用默认值 'auto'
-- [ ] 时间判断边界（6:00 和 18:00）→ 包含边界值
-
----
-
-## 八、模块 M-008 时间轴模块
-
-### 8.1 组件结构
-```
-Timeline.vue
-├── TimelineHeader.vue    # 顶部横幅、下拉刷新
-├── TimelineLine.vue      # 左侧时间线
-└── TimelineItem.vue      # 新闻卡片节点（循环渲染）
-```
-
-### 8.2 TimelineItem 算法伪代码
-```
-输入：news - 单条新闻对象，isFirst - 是否为第一条
-1. 如果 isFirst：
-2.     添加呼吸灯动画类名
-3. 获取信息源配置，查找图标和名称
-4. 渲染新闻卡片：
-5.     左侧圆点（呼吸效果如适用）
-6.     时间标签（格式化后的相对时间）
-7.     标题和摘要
-8.     来源标识
-9.     收藏按钮
-```
-
-### 8.3 下拉刷新算法伪代码
-```
-1. 监听 touchstart/touchmove/touchend 事件
-2. 计算下拉距离
-3. 如果下拉距离 > 阈值（如100px）：
-4.     显示加载动画
-5.     触发刷新新闻数据
-6.     刷新完成后回弹
+interface SiteStat {
+  site_id: string;
+  site_name: string;
+  count: number;
+  raw_count: number;
+}
 ```
 
 ---
 
-## 九、模块 M-009 新闻卡片模块
+## 三、模块 M-003 存储服务（useStorage）
 
-### 9.1 组件结构
-```
-NewsCard.vue
-├── card-header           # 时间 + 来源
-├── card-body             # 标题 + 摘要 + 图片
-└── card-footer           # 收藏按钮 + 跳转链接
+### 3.1 接口签名
+
+```typescript
+interface UseStorageReturn {
+  // 收藏
+  getFavorites(): Favorite[];
+  toggleFavorite(news: News): ApiResponse<{ favorites: Favorite[] }>;
+  getNewFavoritesCount(): number;
+  markFavoritesSeen(): void;
+  resetFavorites(): void;
+  
+  // 历史记录
+  getHistory(): History[];
+  addToHistory(news: News): ApiResponse<{ history: History[] }>;
+  getNewHistoryCount(): number;
+  markHistorySeen(): void;
+  resetHistory(): void;
+  
+  // 偏好设置
+  getPreferences(): UserPreference;
+  savePreferences(prefs: Partial<UserPreference>): ApiResponse<void>;
+  
+  // 数据导入导出
+  exportData(): ApiResponse<{ favorites: Favorite[]; preferences: UserPreference }>;
+  importData(data: { favorites: Favorite[]; preferences: UserPreference }): ApiResponse<void>;
+}
 ```
 
-### 9.2 收藏按钮交互伪代码
+### 3.2 存储键设计
+
+| 键名 | 存储内容 | 数据结构 |
+|:-----|:---------|:---------|
+| `{prefix}-favorites` | 收藏列表 | `Favorite[]` |
+| `{prefix}-history` | 阅读历史 | `History[]` |
+| `{prefix}-preferences` | 用户偏好 | `UserPreference` |
+
+### 3.3 新增计数逻辑
+
 ```
-1. 检查该新闻是否已收藏
-2. 如果已收藏：显示实心星星
-3. 如果未收藏：显示空心星星
-4. 点击时：
-5.     调用 toggleFavorite
-6.     更新按钮状态
-7.     添加点击动画效果
+新增收藏数 = 当前收藏总数 - lastSeenFavoritesCount
+新增历史数 = 当前历史总数 - lastSeenHistoryCount
+
+点击收藏按钮打开弹窗时：
+  更新 lastSeenFavoritesCount = 当前收藏总数
+  
+点击历史按钮打开弹窗时：
+  更新 lastSeenHistoryCount = 当前历史总数
+```
+
+### 3.4 边界条件
+- 历史记录超过 `maxHistory` 条时，自动删除最旧的记录
+- 收藏无数量限制（受 localStorage 容量限制）
+- 数据损坏（JSON 解析失败）时，返回空数组/默认值
+
+---
+
+## 四、模块 M-006 翻译服务（useTranslate）
+
+### 4.1 接口签名
+
+```typescript
+type TranslateMode = 'zh' | 'en' | 'bilingual';
+
+interface UseTranslateReturn {
+  translateMode: Ref<TranslateMode>;
+  
+  getTranslateMode(): TranslateMode;
+  setTranslateMode(mode: TranslateMode): void;
+  toggleTranslateMode(): void;          // 循环切换：zh → bilingual → en → zh
+  getDisplayTitle(news: News): string;  // 获取显示标题
+  initTranslateMode(): void;            // 从 localStorage 初始化
+}
+```
+
+### 4.2 标题显示优先级
+
+| 模式 | 优先级顺序 |
+|:-----|:-----------|
+| `zh`（中文） | `title_zh` → `title_bilingual` → `title` |
+| `en`（英文） | `title_en` → `title` |
+| `bilingual`（双语） | `title_bilingual` → `title_zh` → `title` |
+
+### 4.3 切换逻辑
+```
+toggleTranslateMode():
+  modes = ['zh', 'bilingual', 'en']
+  currentIndex = modes.indexOf(translateMode.value)
+  nextIndex = (currentIndex + 1) % modes.length
+  setTranslateMode(modes[nextIndex])
 ```
 
 ---
 
-## 十、模块 M-010 设置面板模块
+## 五、模块 M-009 滚动进度条（ScrollProgress）
 
-### 10.1 组件结构
-```
-Settings.vue
-├── SourceList.vue       # 信息源开关列表
-├── ThemeSwitch.vue      # 主题切换
-├── SoundSwitch.vue      # 音效开关
-├── DataExport.vue       # 数据导出导入
-└── GeekMode.vue         # 极客模式（长按触发）
-```
+### 5.1 组件 Props
+无 Props，纯展示 + 交互组件。
 
-### 10.2 信息源开关算法伪代码
+### 5.2 交互逻辑
+
+#### 5.2.1 进度计算
 ```
-输入：sourceId - 信息源ID
-1. 获取当前用户偏好中的 enabledSources
-2. 如果 sourceId 已在列表中：
-3.     移除该ID
-4. 否则：
-5.     添加该ID
-6. 保存更新后的偏好
-7. 触发新闻列表重新过滤
+scrollProgress = scrollY / (scrollHeight - clientHeight)
+progressPercent = Math.round(scrollProgress * 100)
 ```
 
-### 10.3 极客模式算法伪代码
+#### 5.2.2 点击跳转
 ```
-1. 监听 mousedown/touchstart 事件
-2. 启动计时器（3秒）
-3. 显示长按进度条
-4. 如果在3秒内释放（mouseup/touchend）：
-5.     取消计时器
-6.     进度条归零
-7. 如果3秒后仍按住：
-8.     显示极客模式弹窗
-9.     允许粘贴JSON配置代码
-10. 解析JSON并验证格式
-11. 如果格式正确：引导用户提交PR
+handleProgressClick(e):
+  rect = progressBar.getBoundingClientRect()
+  clickY = e.clientY - rect.top
+  percent = 1 - (clickY / rect.height)   // 底部是 0%，顶部是 100%
+  targetScrollTop = percent * (scrollHeight - clientHeight)
+  window.scrollTo({ top: targetScrollTop, behavior: 'smooth' })
 ```
+
+#### 5.2.3 拖拽跳转
+```
+mousedown:
+  isDragging = true
+  记录起始位置
+  绑定 mousemove + mouseup 事件
+
+mousemove (dragging):
+  计算当前位置百分比
+  实时更新 scrollTop（behavior: 'auto'）
+  更新进度条 UI（关闭 transition 动画）
+
+mouseup:
+  isDragging = false
+  移除事件监听
+  恢复 transition 动画
+```
+
+### 5.3 显示/隐藏逻辑
+- 滚动距离 > 100px 时显示
+- 顶部时隐藏
 
 ---
 
-## 十一、模块 M-011 PWA 配置
+## 六、模块 M-015 后端抓取主入口
 
-### 11.1 manifest.json 配置项
-| 配置项 | 值 | 说明 |
-|---|---|---|
-| name | AI快讯 | 应用名称 |
-| short_name | AI快讯 | 短名称 |
-| description | 追踪AI前沿动态 | 应用描述 |
-| start_url | / | 启动路径 |
-| display | standalone | 独立应用模式 |
-| background_color | #ffffff | 背景色 |
-| theme_color | #3b82f6 | 主题色 |
-| icons | [] | 图标数组（多尺寸） |
+### 6.1 处理流程总览
 
-### 11.2 Service Worker 缓存策略
 ```
-1. 安装阶段：缓存核心静态资源（HTML、CSS、JS、图标）
-2. 激活阶段：清理旧缓存
-3. fetch 事件：
-4.     如果是 API 请求（/data/*）：network-first
-5.     如果是静态资源：cache-first
-6.     如果离线且缓存命中：返回缓存
-7.     如果离线且缓存未命中：返回离线页面
+main():
+  1. 加载 archive（历史归档）
+  2. 修复 archive 中的未来日期
+  3. 创建所有抓取器实例
+  4. 并发执行所有抓取器（p-limit 限流）
+  5. 合并所有原始数据
+  6. 标准化处理（日期修正、URL 规范化）
+  7. AI 相关性过滤
+  8. 标题 + URL 去重
+  9. 添加双语翻译字段
+  10. 生成 24h / 7d 输出文件
+  11. 更新 archive 归档
+  12. 保存翻译缓存
+  13. 输出统计信息
 ```
 
----
+### 6.2 日期校验逻辑
 
-## 十二、模块 M-012 RSS聚合工作流
+```typescript
+// 对每条新闻进行日期校验
+let publishedAt = raw.publishedAt;
+if (publishedAt && publishedAt.getTime() > now.getTime() + 60 * 60 * 1000) {
+  // 发布时间超过当前时间 1 小时，视为无效日期
+  // 使用抓取时间作为发布时间
+  publishedAt = now;
+}
 
-### 12.1 工作流配置
-```yaml
-name: RSS 更新
-on:
-  schedule:
-    - cron: '*/15 * * * *'  # 每15分钟执行一次
-  workflow_dispatch:        # 手动触发
-
-jobs:
-  update:
-    runs-on: ubuntu-latest
-    steps:
-      - 检出代码
-      - 安装依赖（Node.js）
-      - 执行 RSS 抓取脚本
-      - 提交并推送变更
-```
-
-### 12.2 RSS抓取算法伪代码
-```
-1. 读取 sources.json 获取所有信息源列表
-2. 遍历每个信息源：
-3.     发起 HTTP GET 请求获取 RSS Feed
-4.     解析 RSS XML
-5.     提取新闻条目（标题、链接、发布时间、摘要）
-6.     转换为统一格式的 News 对象
-7. 合并所有新闻条目
-8. 去重（按链接或标题）
-9. 按 pubDate 降序排序
-10. 保留最近 500 条新闻
-11. 写入 news.json
-```
-
----
-
-## 十三、数据初始化（schema / seed 草案）
-
-### 13.1 news.json 种子结构
-```json
-[
-  {
-    "id": "news-001",
-    "title": "GPT-5 发布预览版",
-    "link": "https://example.com/news/1",
-    "source": "openai",
-    "category": "产品发布",
-    "summary": "OpenAI 正式发布 GPT-5 预览版，支持多模态理解",
-    "pubDate": "2026-07-13T10:30:00Z",
-    "isBreaking": true,
-    "imageUrl": "https://example.com/image.jpg"
+// 对 archive 中已有数据也进行校验
+for (const item of archive.values()) {
+  if (item.published_at) {
+    const pubDate = parseISO(item.published_at);
+    if (pubDate && pubDate.getTime() > now.getTime() + 60 * 60 * 1000) {
+      item.published_at = toISOString(now)!;
+    }
   }
-]
-```
-
-### 13.2 sources.json 初始信息源（至少10个）
-```json
-[
-  {"id": "quantum-bit", "name": "量子位", "icon": "📰", "rssUrl": "...", "category": "中文媒体"},
-  {"id": "arxiv", "name": "arXiv", "icon": "📄", "rssUrl": "...", "category": "学术"},
-  {"id": "openai", "name": "OpenAI", "icon": "🤖", "rssUrl": "...", "category": "公司"},
-  {"id": "techweb", "name": "TechWeb", "icon": "💻", "rssUrl": "...", "category": "中文媒体"},
-  {"id": "hacker-news", "name": "Hacker News", "icon": "🔷", "rssUrl": "...", "category": "社区"},
-  {"id": "github-trending", "name": "GitHub Trending", "icon": "🐙", "rssUrl": "...", "category": "开源"},
-  {"id": "ai-bot-news", "name": "AI Bot News", "icon": "🔮", "rssUrl": "...", "category": "媒体"},
-  {"id": "towards-ai", "name": "Towards AI", "icon": "📚", "rssUrl": "...", "category": "学术"},
-  {"id": "machine-learning", "name": "Machine Learning", "icon": "📊", "rssUrl": "...", "category": "学术"},
-  {"id": "venturebeat", "name": "VentureBeat", "icon": "📈", "rssUrl": "...", "category": "媒体"}
-]
-```
-
-### 13.3 localStorage 默认偏好
-```json
-{
-  "enabledSources": ["quantum-bit", "arxiv", "openai", "techweb", "hacker-news"],
-  "theme": "auto",
-  "soundEnabled": false,
-  "lastUpdateTime": ""
 }
 ```
 
+### 6.3 命令行参数
+
+| 参数 | 缩写 | 默认值 | 说明 |
+|:-----|:-----|:-------|:-----|
+| `--window-hours` | `-w` | 24 | 时间窗口（小时） |
+| `--translate-max-new` | - | 80 | 单次最大新翻译条数 |
+| `--output-dir` | `-o` | `public/data` | 输出目录 |
+| `--opml` | - | `feeds/follow.opml` | OPML 文件路径 |
+
 ---
 
-## 十四、版本历史
+## 七、模块 M-018 翻译模块
 
-| 版本 | 日期 | 变更 | 作者 |
-|---|---|---|---|
-| v1.0 | 2026-07-13 | 初稿 | AI-TL |
+### 7.1 翻译流程
+
+```
+addBilingualFields(itemsAi, itemsAll, cache, maxNew):
+  1. 从 itemsAll 中收集所有中文标题（按 URL 索引）
+  2. 遍历每条新闻：
+     a. 如果是中文标题，直接填充 title_zh
+     b. 如果是英文标题：
+        - 先从 zhByUrl 查找（同 URL 的中文标题）
+        - 再从 cache 查找（历史翻译缓存）
+        - 都没有且允许翻译时，调用 Google API
+  3. 生成 title_bilingual = "中文 / 英文"
+  4. 更新翻译缓存
+  5. 返回结果
+```
+
+### 7.2 Google 翻译 API 调用
+
+```
+API: https://translate.googleapis.com/translate_a/single
+参数:
+  - client: gtx
+  - sl: auto (源语言自动检测)
+  - tl: zh-CN (目标语言)
+  - dt: t (翻译)
+  - q: 待翻译文本
+
+返回格式:
+  [
+    [
+      [翻译片段1, 原文片段1, ...],
+      [翻译片段2, 原文片段2, ...],
+      ...
+    ],
+    ...
+  ]
+
+组装翻译结果:
+  将所有翻译片段拼接起来
+```
+
+### 7.3 性能优化
+- **缓存机制**：已翻译标题持久化到 `title-zh-cache.json`
+- **限流保护**：每次最多翻译 N 条新标题
+- **超时控制**：单条翻译超时 12 秒
+- **批量处理**：逐条顺序调用，避免并发限流
+
+---
+
+## 八、模块 M-017 过滤器
+
+### 8.1 AI 相关性过滤
+
+基于关键词匹配的过滤算法：
+- 匹配 AI / 机器学习 / 深度学习相关关键词
+- 支持中英文混合关键词
+- 标题命中关键词即视为 AI 相关
+
+### 8.2 去重算法
+
+基于「标题相似度 + URL」的双重去重：
+1. **URL 规范化**：去除 tracking 参数，统一协议和域名大小写
+2. **标题去重**：标题完全相同（忽略大小写和首尾空格）
+3. **优先级**：保留首次出现的条目
+
+---
+
+## 九、前端组件树数据流
+
+### 9.1 数据流图
+
+```
+                    App.vue
+                       │
+         ┌─────────────┼─────────────┐
+         ▼             ▼             ▼
+    useNews()    useStorage()   useTranslate()
+         │             │             │
+         ├─────────────┴─────────────┤
+         ▼             ▼             ▼
+    Timeline     FavoritesModal   NewsCard
+       │              │              │
+       ▼              ▼              ▼
+    NewsCard     HistoryModal   ScrollProgress
+```
+
+### 9.2 响应式更新机制
+
+- 翻译模式变化 → `getDisplayTitle` computed 自动更新 → 所有 NewsCard 标题更新
+- 收藏变化 → `newFavoritesCount` computed 自动更新 → 徽章数字更新
+- 主题变化 → `document.documentElement.classList` 切换 → 全局样式更新
+
+---
+
+## 十、错误处理策略
+
+### 10.1 前端错误处理
+
+| 场景 | 处理方式 | 用户感知 |
+|:-----|:---------|:---------|
+| 数据加载失败 | 显示错误提示，提供重试按钮 | 错误文案 + 重试按钮 |
+| 网络超时 | 显示加载中，超时后提示 | 骨架屏 → 错误提示 |
+| localStorage 满 | 捕获异常，静默失败 | 无感知（功能降级） |
+| 翻译模式切换 | 即时切换，无网络请求 | 标题立即变化 |
+
+### 10.2 后端错误处理
+
+| 场景 | 处理方式 |
+|:-----|:---------|
+| 单个数据源抓取失败 | 记录日志，跳过该源，继续其他源 |
+| 翻译 API 失败 | 返回 null，保留英文原文 |
+| 部分 RSS 源失败 | 记录错误，继续其他源 |
+| 写入文件失败 | 抛出异常，终止运行 |
+
+---
+
+## 十一、性能优化点
+
+### 11.1 前端性能
+1. **虚拟滚动**：1000 条以内直接渲染，超过可考虑虚拟列表
+2. **computed 缓存**：翻译标题、筛选结果用 computed 缓存
+3. **事件节流**：滚动事件使用 `{ passive: true }` 优化
+4. **图片懒加载**：暂未使用图片，预留空间
+
+### 11.2 后端性能
+1. **并发控制**：p-limit 限制并发数为 5
+2. **翻译缓存**：避免重复翻译相同标题
+3. **流式处理**：边抓取边处理，内存友好
+4. **增量更新**：基于 archive 归档，只处理新数据

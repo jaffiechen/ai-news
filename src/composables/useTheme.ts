@@ -1,12 +1,11 @@
 import { ref } from 'vue'
 import type { ApiResponse } from '@/types'
-import { config } from '@/config'
 import { success } from '@/utils/response'
 import { useStorage } from './useStorage'
 
-type ThemeMode = 'light' | 'dark' | 'auto'
+type ThemeMode = 'light' | 'dark'
 
-const currentTheme = ref<ThemeMode>('auto')
+const currentTheme = ref<ThemeMode>('light')
 
 export function useTheme() {
   const { getPreferences, savePreferences } = useStorage()
@@ -16,42 +15,29 @@ export function useTheme() {
   }
 
   function applyTheme(theme: string): void {
-    const validThemes: ThemeMode[] = ['light', 'dark', 'auto']
+    const validThemes: ThemeMode[] = ['light', 'dark']
     if (!validThemes.includes(theme as ThemeMode)) {
-      theme = 'auto'
+      theme = 'light'
     }
 
     currentTheme.value = theme as ThemeMode
-
-    let appliedTheme: 'light' | 'dark'
-    if (theme === 'auto') {
-      const hour = new Date().getHours()
-      appliedTheme = hour >= config.themeAutoStartHour && hour < config.themeAutoEndHour ? 'light' : 'dark'
-    } else {
-      appliedTheme = theme as 'light' | 'dark'
-    }
-
-    document.documentElement.classList.toggle('dark', appliedTheme === 'dark')
+    document.documentElement.classList.toggle('dark', theme === 'dark')
   }
 
-  async function toggleTheme(mode?: ThemeMode): Promise<ApiResponse<{ currentTheme: string }>> {
-    const current = currentTheme.value
-    
-    if (!mode) {
-      const themes: ThemeMode[] = ['auto', 'light', 'dark']
-      const currentIndex = themes.indexOf(current)
-      mode = themes[(currentIndex + 1) % themes.length]
-    }
-
-    applyTheme(mode)
-    await savePreferences({ theme: mode })
-    
-    return success({ currentTheme: mode })
+  async function toggleTheme(): Promise<ApiResponse<{ currentTheme: string }>> {
+    const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
+    applyTheme(newTheme)
+    await savePreferences({ theme: newTheme })
+    return success({ currentTheme: newTheme })
   }
 
   function initTheme(): void {
     const prefs = getPreferences()
-    applyTheme(prefs.theme)
+    let theme = prefs.theme
+    if (theme === 'auto') {
+      theme = 'light'
+    }
+    applyTheme(theme)
   }
 
   return {

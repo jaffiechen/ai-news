@@ -1,7 +1,7 @@
 const DEFAULT_CONFIG = {
-  newsApiUrl: '/data/news.json',
-  sourcesApiUrl: '/data/sources.json',
-  updateInterval: 900000,
+  newsApiUrl: '/data',
+  sourcesApiUrl: '/data/source-status.json',
+  updateInterval: 3600000,
   breakingKeywords: ['GPT-5', '发布', '开源', '重磅', '突破性', '重大', '宣布'],
   localStoragePrefix: 'ai-news',
   themeAutoStartHour: 6,

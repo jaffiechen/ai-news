@@ -14,7 +14,7 @@ function toggleSettings() {
 
 function handleClickOutside(event: MouseEvent) {
   const target = event.target as HTMLElement
-  if (!target.closest('.settings-container')) {
+  if (isOpen.value && !target.closest('.settings-dropdown')) {
     isOpen.value = false
   }
 }
@@ -44,7 +44,7 @@ defineExpose({
     <Transition name="slide-down">
       <div 
         v-if="isOpen"
-        class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
+        class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50 settings-dropdown"
       >
         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">设置</h2>

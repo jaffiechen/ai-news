@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { resolve } from 'path'
 
 export default defineConfig({
+  base: process.env.GITHUB_PAGES ? '/ai-news/' : '/',
   plugins: [
     vue(),
     VitePWA({

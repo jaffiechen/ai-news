@@ -1,8 +1,12 @@
-name: RSS 更新
+name: RSS 数据更新
+
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -15,17 +19,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: 安装依赖
-        run: npm install
+        run: npm ci
 
-      - name: 执行 RSS 抓取
-        run: node scripts/rss-fetcher.js
+      - name: 执行数据抓取
+        run: npm run fetch
+        env:
+          TZ: 'Asia/Shanghai'
 
-      - name: 提交变更
+      - name: 提交并推送数据更新
         run: |
           git config user.email "github-actions@github.com"
           git config user.name "GitHub Actions"
-          git add public/data/news.json
-          git commit -m "🔄 RSS 更新: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          git add public/data/
+          git diff --cached --quiet || git commit -m "🔄 自动更新数据: $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push

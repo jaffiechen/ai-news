@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>AI News Aggregator RSS Feeds</title>
+  </head>
+  <body>
+    <outline text="中文博客">
+      <outline text="量子位" title="量子位" type="rss" xmlUrl="https://www.qbitai.com/feed" htmlUrl="https://www.qbitai.com"/>
+      <outline text="宝玉的分享" title="宝玉的分享" type="rss" xmlUrl="https://baoyu.io/feed.xml" htmlUrl="https://baoyu.io"/>
+      <outline text="爱范儿" title="爱范儿" type="rss" xmlUrl="http://www.ifanr.com/feed" htmlUrl="http://www.ifanr.com"/>
+      <outline text="阮一峰的网络日志" title="阮一峰的网络日志" type="rss" xmlUrl="http://feeds.feedburner.com/ruanyifeng" htmlUrl="http://www.ruanyifeng.com"/>
+      <outline text="美团技术团队" title="美团技术团队" type="rss" xmlUrl="https://tech.meituan.com/feed/" htmlUrl="https://tech.meituan.com"/>
+      <outline text="SuperTechFans" title="SuperTechFans" type="rss" xmlUrl="https://www.supertechfans.com/cn/index.xml" htmlUrl="https://www.supertechfans.com"/>
+    </outline>
+    <outline text="中文聚合">
+      <outline text="掘金本周最热" title="掘金本周最热" type="rss" xmlUrl="https://rsshub.bestblogs.dev/juejin/trending/all/weekly" htmlUrl="https://juejin.cn"/>
+    </outline>
+    <outline text="中文Twitter博主">
+      <outline text="李继刚(@lijigang_com)" title="李继刚(@lijigang_com)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/ca2fa444b6ea4b8b974fe148056e497a" htmlUrl="https://x.com/lijigang_com"/>
+      <outline text="宝玉(@dotey)" title="宝玉(@dotey)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/97f1484ae48c430fbbf3438099743674" htmlUrl="https://x.com/dotey"/>
+      <outline text="歸藏(guizang.ai)(@op7418)" title="歸藏(guizang.ai)(@op7418)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/831fac36aa0a49a9af79f35dc1c9b5d9" htmlUrl="https://x.com/op7418"/>
+      <outline text="小互(@imxiaohu)" title="小互(@imxiaohu)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/74e542992cf7441390c708f5601071d4" htmlUrl="https://x.com/imxiaohu"/>
+      <outline text="向阳乔木(@vista8)" title="向阳乔木(@vista8)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/9de19c78f7454ad08c956c1a00d237fe" htmlUrl="https://x.com/vista8"/>
+      <outline text="AI产品黄叔(@PMbackttfuture)" title="AI产品黄叔(@PMbackttfuture)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/5b632b7fba274f62928cdcc9d3db4c5e" htmlUrl="https://x.com/PMbackttfuture"/>
+      <outline text="idoubi(@idoubicc)" title="idoubi(@idoubicc)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/3d72acd51d21414ea39871fc01982a65" htmlUrl="https://x.com/idoubicc"/>
+      <outline text="Viking(@vikingmute)" title="Viking(@vikingmute)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/aab44cb2665a49258cd81f63b0b55192" htmlUrl="https://x.com/vikingmute"/>
+      <outline text="Geek(@geekbb)" title="Geek(@geekbb)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/9cb3b60e689e4445a7fbdfd0be144126" htmlUrl="https://x.com/geekbb"/>
+      <outline text="Tw93(@HiTw93)" title="Tw93(@HiTw93)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/665fc88440fd4436acbc2e630d824926" htmlUrl="https://x.com/HiTw93"/>
+      <outline text="Yangyi(@Yangyixxxx)" title="Yangyi(@Yangyixxxx)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/66c40de71a9842fda4853b7d9d1d20da" htmlUrl="https://x.com/Yangyixxxx"/>
+      <outline text="hidecloud(@hidecloud)" title="hidecloud(@hidecloud)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/23d41992b29340788aa3d09d8364c5f5" htmlUrl="https://x.com/hidecloud"/>
+      <outline text="cat(@_catwu)" title="cat(@_catwu)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/66a6b39ddcfa42e39621e0ab293c1bdd" htmlUrl="https://x.com/_catwu"/>
+      <outline text="meng shao(@shao__meng)" title="meng shao(@shao__meng)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/48aae530e0bf413aa7d44380f418e2e3" htmlUrl="https://x.com/shao__meng"/>
+      <outline text="Eric Jing(@ericjing_ai)" title="Eric Jing(@ericjing_ai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/ddfdcdd4e390495c942f0b5da62af0fb" htmlUrl="https://x.com/ericjing_ai"/>
+    </outline>
+    <outline text="中国AI公司">
+      <outline text="Qwen(@Alibaba_Qwen)" title="Qwen(@Alibaba_Qwen)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/80032d016d654eb4afe741ff34b7643d" htmlUrl="https://x.com/Alibaba_Qwen"/>
+      <outline text="DeepSeek(@deepseek_ai)" title="DeepSeek(@deepseek_ai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/68b610deb24b47ae9a236811563cda86" htmlUrl="https://x.com/deepseek_ai"/>
+      <outline text="Hunyuan(@TXhunyuan)" title="Hunyuan(@TXhunyuan)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/6e8e7b42cb434818810f87bcf77d86fb" htmlUrl="https://x.com/TXhunyuan"/>
+      <outline text="Skywork(@Skywork_ai)" title="Skywork(@Skywork_ai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/6d7d398dd80b48d79669c92745d32cf6" htmlUrl="https://x.com/Skywork_ai"/>
+      <outline text="Kling AI(@Kling_ai)" title="Kling AI(@Kling_ai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/564237c3de274d58a04f064920817888" htmlUrl="https://x.com/Kling_ai"/>
+      <outline text="Hailuo AI (MiniMax)(@Hailuo_AI)" title="Hailuo AI (MiniMax)(@Hailuo_AI)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/e65b5e59fcb544918c1ba17f5758f0f8" htmlUrl="https://x.com/Hailuo_AI"/>
+      <outline text="Fish Audio(@FishAudio)" title="Fish Audio(@FishAudio)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/4900b3dcd592424687582ff9e0f148ea" htmlUrl="https://x.com/FishAudio"/>
+      <outline text="Monica_IM(@hey_im_monica)" title="Monica_IM(@hey_im_monica)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/5d749cc613ec4069bb2a47334739e1b6" htmlUrl="https://x.com/hey_im_monica"/>
+      <outline text="Dify(@dify_ai)" title="Dify(@dify_ai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/0be252fedbe84ad7bea21be44b18da89" htmlUrl="https://x.com/dify_ai"/>
+      <outline text="Jina AI(@JinaAI_)" title="Jina AI(@JinaAI_)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/f510f6e7eecf456ca7e2895a46752888" htmlUrl="https://x.com/JinaAI_"/>
+      <outline text="Milvus(@milvusio)" title="Milvus(@milvusio)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/424e67b19eed4500b7a440976bbd2ade" htmlUrl="https://x.com/milvusio"/>
+    </outline>
+    <outline text="华人AI研究者">
+      <outline text="Fei-Fei Li(@drfeifei)" title="Fei-Fei Li(@drfeifei)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/a4bfe44bfc0d4c949da21ebd3f5f42a5" htmlUrl="https://x.com/drfeifei"/>
+      <outline text="Junyang Lin(@JustinLin610)" title="Junyang Lin(@JustinLin610)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/082097117b4543e9a741cd2580f936d3" htmlUrl="https://x.com/JustinLin610"/>
+      <outline text="Binyuan Hui(@huybery)" title="Binyuan Hui(@huybery)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/f54b2b40185943ce8f48a880110b7bc2" htmlUrl="https://x.com/huybery"/>
+      <outline text="Jim Fan(@DrJimFan)" title="Jim Fan(@DrJimFan)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/c6cfe7c0d6b74849997073233fdea840" htmlUrl="https://x.com/DrJimFan"/>
+      <outline text="Jerry Liu(@jerryjliu0)" title="Jerry Liu(@jerryjliu0)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/b3d904c0d7c446558ef3a1e7f2eb362b" htmlUrl="https://x.com/jerryjliu0"/>
+      <outline text="Lilian Weng(@lilianweng)" title="Lilian Weng(@lilianweng)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/a8f7e2238039461cbc8bf55f5f194498" htmlUrl="https://x.com/lilianweng"/>
+      <outline text="Andrew Ng(@AndrewYNg)" title="Andrew Ng(@AndrewYNg)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/08b5488b20bc437c8bfc317a52e5c26d" htmlUrl="https://x.com/AndrewYNg"/>
+    </outline>
+    <outline text="AI Companies">
+      <outline text="OpenAI(@OpenAI)" title="OpenAI(@OpenAI)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/0c0856a69f9f49cf961018c32a0b0049" htmlUrl="https://x.com/OpenAI"/>
+      <outline text="OpenAI Developers(@OpenAIDevs)" title="OpenAI Developers(@OpenAIDevs)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/971dc1fc90da449bac23e5fad8a33d55" htmlUrl="https://x.com/OpenAIDevs"/>
+      <outline text="ChatGPT(@ChatGPTapp)" title="ChatGPT(@ChatGPTapp)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/f7992687b8d74b14bf2341eb3a0a5ec4" htmlUrl="https://x.com/ChatGPTapp"/>
+      <outline text="Anthropic(@AnthropicAI)" title="Anthropic(@AnthropicAI)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/fc28a211471b496682feff329ec616e5" htmlUrl="https://x.com/AnthropicAI"/>
+      <outline text="Claude(@claudeai)" title="Claude(@claudeai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/01f60d63a61b44d692cc35c7feb0b4a4" htmlUrl="https://x.com/claudeai"/>
+      <outline text="Google AI(@GoogleAI)" title="Google AI(@GoogleAI)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/4de0bd2d5cef4333a0260dc8157054a7" htmlUrl="https://x.com/GoogleAI"/>
+      <outline text="Google DeepMind(@GoogleDeepMind)" title="Google DeepMind(@GoogleDeepMind)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/a99538443a484fcc846bdcc8f50745ec" htmlUrl="https://x.com/GoogleDeepMind"/>
+      <outline text="Google Gemini App(@GeminiApp)" title="Google Gemini App(@GeminiApp)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/6fb337feeec44ca38b79491b971d868d" htmlUrl="https://x.com/GeminiApp"/>
+      <outline text="xAI(@xai)" title="xAI(@xai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/3953aa71e87a422eb9d7bf6ff1c7c43e" htmlUrl="https://x.com/xai"/>
+      <outline text="Hugging Face(@huggingface)" title="Hugging Face(@huggingface)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/fc16750ce50741f1b1f05ea1fb29436f" htmlUrl="https://x.com/huggingface"/>
+      <outline text="NVIDIA AI(@NVIDIAAI)" title="NVIDIA AI(@NVIDIAAI)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/05f1492e43514dc3862a076d3697c390" htmlUrl="https://x.com/NVIDIAAI"/>
+      <outline text="AI at Meta(@AIatMeta)" title="AI at Meta(@AIatMeta)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/ef7c70f9568d45f4915169fef4ce90b4" htmlUrl="https://x.com/AIatMeta"/>
+      <outline text="Microsoft Research(@MSFTResearch)" title="Microsoft Research(@MSFTResearch)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/61f4b78554fb4b8fa5653ec5d924d15a" htmlUrl="https://x.com/MSFTResearch"/>
+      <outline text="Groq Inc(@GroqInc)" title="Groq Inc(@GroqInc)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/771b32075fe54a83bdb6966de9647b4f" htmlUrl="https://x.com/GroqInc"/>
+      <outline text="Cursor(@cursor_ai)" title="Cursor(@cursor_ai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/5287b4e0e13a4ab7ab7b1d56f9d88960" htmlUrl="https://x.com/cursor_ai"/>
+      <outline text="Windsurf(@windsurf_ai)" title="Windsurf(@windsurf_ai)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/4a8273800ed34a069eecdb6c5c1b9ccf" htmlUrl="https://x.com/windsurf_ai"/>
+      <outline text="bolt.new(@boltdotnew)" title="bolt.new(@boltdotnew)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/760ab7cd9708452c9ce1f9144b92a430" htmlUrl="https://x.com/boltdotnew"/>
+    </outline>
+    <outline text="Dev Tools">
+      <outline text="LangChain(@LangChainAI)" title="LangChain(@LangChainAI)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/862fee50a745423c87e2633b274caf1d" htmlUrl="https://x.com/LangChainAI"/>
+      <outline text="LlamaIndex(@llama_index)" title="LlamaIndex(@llama_index)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/67e259bd5be544ce84bbc867eace54c2" htmlUrl="https://x.com/llama_index"/>
+      <outline text="ollama(@ollama)" title="ollama(@ollama)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/6326c63a2dfa445bbde88bea0c3112c2" htmlUrl="https://x.com/ollama"/>
+      <outline text="Firecrawl(@firecrawl_dev)" title="Firecrawl(@firecrawl_dev)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/c04abb206bbf4f91b22795024d6c0614" htmlUrl="https://x.com/firecrawl_dev"/>
+      <outline text="OpenRouter(@OpenRouterAI)" title="OpenRouter(@OpenRouterAI)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/e503a90c035c4b1d8f8dd34907d15bf4" htmlUrl="https://x.com/OpenRouterAI"/>
+      <outline text="AI SDK(@aisdk)" title="AI SDK(@aisdk)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/22af005b21ec45b1a4503acca777b7f0" htmlUrl="https://x.com/aisdk"/>
+      <outline text="DeepLearning.AI(@DeepLearningAI)" title="DeepLearning.AI(@DeepLearningAI)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/42e6b4901b97498eab2ab64c07d56177" htmlUrl="https://x.com/DeepLearningAI"/>
+      <outline text="GitHub(@github)" title="GitHub(@github)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/fa5b15f68a2e4df1ab301e26a4ab9190" htmlUrl="https://x.com/github"/>
+      <outline text="Figma(@figma)" title="Figma(@figma)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/f8a106a09a7d404fb8de7eb0c5ddd2a2" htmlUrl="https://x.com/figma"/>
+      <outline text="Notion(@NotionHQ)" title="Notion(@NotionHQ)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/f97a26863aec4425b021720d4f8e4ede" htmlUrl="https://x.com/NotionHQ"/>
+      <outline text="NotebookLM(@NotebookLM)" title="NotebookLM(@NotebookLM)" type="rss" xmlUrl="https://api.xgo.ing/rss/user/221a88341acb475db221a12fed8208d0" htmlUrl="https://x.com/NotebookLM"/>
+    </outline>
+    <outline text="科技媒体">
+      <outline text="36氪" title="36氪" type="rss" xmlUrl="https://36kr.com/feed" htmlUrl="https://36kr.com"/>
+      <outline text="少数派" title="少数派" type="rss" xmlUrl="https://sspai.com/feed" htmlUrl="https://sspai.com"/>
+      <outline text="InfoQ" title="InfoQ" type="rss" xmlUrl="https://www.infoq.cn/feed" htmlUrl="https://www.infoq.cn"/>
+      <outline text="ReadHub" title="ReadHub" type="rss" xmlUrl="https://readhub.cn/rss" htmlUrl="https://readhub.cn"/>
+      <outline text="Hacker News" title="Hacker News" type="rss" xmlUrl="https://news.ycombinator.com/rss" htmlUrl="https://news.ycombinator.com"/>
+      <outline text="TechCrunch" title="TechCrunch" type="rss" xmlUrl="https://techcrunch.com/feed/" htmlUrl="https://techcrunch.com"/>
+      <outline text="VentureBeat" title="VentureBeat" type="rss" xmlUrl="https://venturebeat.com/feed/" htmlUrl="https://venturebeat.com"/>
+      <outline text="ZDNet" title="ZDNet" type="rss" xmlUrl="https://www.zdnet.com/news/rss.xml" htmlUrl="https://www.zdnet.com"/>
+      <outline text="OpenAI Blog" title="OpenAI Blog" type="rss" xmlUrl="https://openai.com/blog/rss.xml" htmlUrl="https://openai.com/blog"/>
+      <outline text="arXiv AI" title="arXiv AI" type="rss" xmlUrl="http://export.arxiv.org/rss/cs.AI" htmlUrl="https://arxiv.org/list/cs.AI/recent"/>
+      <outline text="Towards AI" title="Towards AI" type="rss" xmlUrl="https://towardsai.net/feed" htmlUrl="https://towardsai.net"/>
+      <outline text="AI Weekly" title="AI Weekly" type="rss" xmlUrl="https://aiweekly.co/feed" htmlUrl="https://aiweekly.co"/>
+      <outline text="TechWeb" title="TechWeb" type="rss" xmlUrl="https://www.techweb.com.cn/rss/" htmlUrl="https://www.techweb.com.cn"/>
+    </outline>
+  </body>
+</opml>

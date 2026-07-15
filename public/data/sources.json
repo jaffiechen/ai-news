@@ -1,12 +1,157 @@
 [
-  {"id": "quantum-bit", "name": "量子位", "icon": "📰", "rssUrl": "https://www.qbitai.com/feed", "category": "中文媒体"},
-  {"id": "arxiv", "name": "arXiv", "icon": "📄", "rssUrl": "https://arxiv.org/rss/cs.AI", "category": "学术"},
-  {"id": "openai", "name": "OpenAI", "icon": "🤖", "rssUrl": "https://openai.com/blog/rss.xml", "category": "公司"},
-  {"id": "techweb", "name": "TechWeb", "icon": "💻", "rssUrl": "https://www.techweb.com.cn/rss", "category": "中文媒体"},
-  {"id": "hacker-news", "name": "Hacker News", "icon": "🔷", "rssUrl": "https://news.ycombinator.com/rss", "category": "社区"},
-  {"id": "github-trending", "name": "GitHub Trending", "icon": "🐙", "rssUrl": "https://github.com/trending/developers", "category": "开源"},
-  {"id": "ai-bot-news", "name": "AI Bot News", "icon": "🔮", "rssUrl": "https://aibot.news/rss", "category": "媒体"},
-  {"id": "towards-ai", "name": "Towards AI", "icon": "📚", "rssUrl": "https://towardsai.net/rss", "category": "学术"},
-  {"id": "machine-learning", "name": "Machine Learning", "icon": "📊", "rssUrl": "https://machinelearningnews.com/rss", "category": "学术"},
-  {"id": "venturebeat", "name": "VentureBeat", "icon": "📈", "rssUrl": "https://venturebeat.com/feed", "category": "媒体"}
+  {
+    "id": "ithome",
+    "name": "IT之家",
+    "icon": "🏠",
+    "rssUrl": "https://www.ithome.com/rss/",
+    "category": "科技媒体",
+    "type": "rss"
+  },
+  {
+    "id": "36kr",
+    "name": "36氪",
+    "icon": "�",
+    "rssUrl": "https://36kr.com/feed",
+    "category": "科技媒体",
+    "type": "rss"
+  },
+  {
+    "id": "tmtpost",
+    "name": "钛媒体",
+    "icon": "�",
+    "rssUrl": "https://www.tmtpost.com/rss.xml",
+    "category": "科技媒体",
+    "type": "rss"
+  },
+  {
+    "id": "qbitai",
+    "name": "量子位",
+    "icon": "⚛️",
+    "rssUrl": "https://www.qbitai.com/feed",
+    "category": "科技媒体",
+    "type": "rss"
+  },
+  {
+    "id": "techcrunch",
+    "name": "TechCrunch",
+    "icon": "🌍",
+    "rssUrl": "https://techcrunch.com/feed",
+    "category": "国际媒体",
+    "type": "rss"
+  },
+  {
+    "id": "venturebeat",
+    "name": "VentureBeat",
+    "icon": "💡",
+    "rssUrl": "https://venturebeat.com/feed",
+    "category": "国际媒体",
+    "type": "rss"
+  },
+  {
+    "id": "zdnet",
+    "name": "ZDNet",
+    "icon": "🔗",
+    "rssUrl": "https://www.zdnet.com/news/rss.xml",
+    "category": "国际媒体",
+    "type": "rss"
+  },
+  {
+    "id": "openai",
+    "name": "OpenAI",
+    "icon": "🧠",
+    "rssUrl": "https://openai.com/blog/rss.xml",
+    "category": "官方发布",
+    "type": "rss"
+  },
+  {
+    "id": "towards-ai",
+    "name": "Towards AI",
+    "icon": "📚",
+    "rssUrl": "https://towardsai.net/rss",
+    "category": "学术平台",
+    "type": "rss"
+  },
+  {
+    "id": "aiweekly",
+    "name": "AI Weekly",
+    "icon": "📅",
+    "rssUrl": "https://aiweekly.co/feed",
+    "category": "学术平台",
+    "type": "rss"
+  },
+  {
+    "id": "aihub",
+    "name": "AIHub",
+    "icon": "🌀",
+    "url": "https://www.aihub.cn/news/",
+    "category": "科技媒体",
+    "type": "html",
+    "selectors": {
+      "list": ".news-item, .article-item, .list-item",
+      "title": "h2, h3, .title, .article-title",
+      "link": "a",
+      "summary": ".summary, .desc, .excerpt",
+      "date": ".time, .date"
+    }
+  },
+  {
+    "id": "aibase",
+    "name": "AI Base",
+    "icon": "�",
+    "url": "https://www.aibase.com/zh/news",
+    "category": "科技媒体",
+    "type": "html",
+    "selectors": {
+      "list": ".news-item, .article-item",
+      "title": "h2, h3, .title",
+      "link": "a",
+      "summary": ".summary, .desc",
+      "date": ".time, .date"
+    }
+  },
+  {
+    "id": "mydrivers",
+    "name": "驱动之家",
+    "icon": "�",
+    "url": "https://news.mydrivers.com/kejiqianyan.html",
+    "category": "科技媒体",
+    "type": "html",
+    "selectors": {
+      "list": ".article-item, .news-item",
+      "title": "h2, h3, .title",
+      "link": "a",
+      "summary": ".summary, .desc",
+      "date": ".time, .date"
+    }
+  },
+  {
+    "id": "jiqizhixin",
+    "name": "机器之心",
+    "icon": "🤖",
+    "url": "https://jigou.jiqizhixin.com/industry",
+    "category": "科技媒体",
+    "type": "html",
+    "selectors": {
+      "list": ".article-item, .item",
+      "title": "h2, h3, .title",
+      "link": "a",
+      "summary": ".summary, .desc",
+      "date": ".time, .date"
+    }
+  },
+  {
+    "id": "zhidx",
+    "name": "懂懂车",
+    "icon": "�",
+    "url": "https://zhidx.com/p/category/zhidongxi/%e4%ba%ba%e5%b7%a5%e6%99%ba%e8%83%bd",
+    "category": "科技媒体",
+    "type": "html",
+    "selectors": {
+      "list": ".article-item, .post-item",
+      "title": "h2, h3, .article-title",
+      "link": "a",
+      "summary": ".summary, .excerpt",
+      "date": ".time, .date"
+    }
+  }
 ]
