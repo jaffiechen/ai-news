@@ -83,14 +83,14 @@ const displayTitle = computed(() => {
           ? 'bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 opacity-70' 
           : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600/50'"
       >
-        <div class="flex items-center gap-2 mb-2">
+        <div class="flex items-center gap-2 mb-2 flex-wrap">
           <span 
             class="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 text-xs font-medium rounded-full"
             :class="isVisited 
               ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400' 
               : 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'"
           >
-            <span>{{ news.site_name }}</span>
+            <span>{{ news.site_name }}-{{ news.source }}</span>
           </span>
           <span 
             v-if="isVisited" 

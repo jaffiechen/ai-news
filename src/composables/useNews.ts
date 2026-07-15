@@ -33,13 +33,19 @@ export function useNews() {
       const data = await response.json() as LatestPayload
       preloadedData.value[range] = data
       
-      newsList.value = data.items.sort((a, b) => {
+      const validItems = filterInvalidNews(data.items)
+      
+      newsList.value = validItems.sort((a, b) => {
         const timeA = a.published_at ? new Date(a.published_at).getTime() : 0
         const timeB = b.published_at ? new Date(b.published_at).getTime() : 0
         return timeB - timeA
       })
       
-      siteStats.value = data.site_stats || []
+      const validSiteIds = new Set(validItems.map(n => n.site_id))
+      siteStats.value = (data.site_stats || []).filter(s => validSiteIds.has(s.site_id)).map(s => ({
+        ...s,
+        count: validItems.filter(n => n.site_id === s.site_id).length
+      }))
       
       const endTime = performance.now()
       console.warn(`[AI-News] News loaded in ${(endTime - startTime).toFixed(2)}ms`)
@@ -84,12 +90,36 @@ export function useNews() {
     }
   }
 
+  function filterInvalidNews(items: News[]): News[] {
+    const invalidPatterns = [
+      'click here to enter',
+      'page fallback',
+      'has expired',
+      'domain is for sale',
+      'under construction'
+    ]
+    return items.filter(n => {
+      const title = n.title?.toLowerCase() || ''
+      const source = n.source?.toLowerCase() || ''
+      return !invalidPatterns.some(p => title.includes(p) || source.includes(p))
+    })
+  }
+
   function filterBySources(items: News[]): News[] {
     const prefs = getPreferences()
     if (!prefs.enabledSources || prefs.enabledSources.length === 0) {
       return items
     }
-    return items.filter(n => prefs.enabledSources.includes(n.source))
+    const filtered = items.filter(n => prefs.enabledSources.includes(n.source))
+    if (filtered.length === 0 && items.length > 0) {
+      const allSources = new Set(items.map(n => n.source))
+      const hasMatchingSource = prefs.enabledSources.some(s => allSources.has(s))
+      if (!hasMatchingSource) {
+        savePreferences({ enabledSources: [] })
+        return items
+      }
+    }
+    return filtered
   }
 
   function filterByTimeRange(news: News[], range: '24h' | '7d' | 'all'): News[] {
@@ -101,8 +131,9 @@ export function useNews() {
       : new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
     
     return news.filter(n => {
-      if (!n.published_at) return false
-      return new Date(n.published_at) >= cutoff
+      const timeStr = n.published_at || n.first_seen_at
+      if (!timeStr) return false
+      return new Date(timeStr) >= cutoff
     })
   }
 
@@ -127,13 +158,22 @@ export function useNews() {
     return news.filter(n => n.source === sourceName)
   }
 
+  const filteredBySources = computed(() => filterBySources(newsList.value))
+
   const sites = computed(() => {
-    return siteStats.value.map(s => ({ id: s.site_id, name: s.site_name, count: s.count }))
+    const counts: Record<string, number> = {}
+    filteredBySources.value.forEach(n => {
+      counts[n.site_id] = (counts[n.site_id] || 0) + 1
+    })
+    return siteStats.value
+      .map(s => ({ id: s.site_id, name: s.site_name, count: counts[s.site_id] || 0 }))
+      .filter(s => s.count > 0)
+      .sort((a, b) => b.count - a.count)
   })
 
   const sourcesBySite = computed(() => {
     const groups: Record<string, Set<string>> = {}
-    newsList.value.forEach(n => {
+    filteredBySources.value.forEach(n => {
       if (!groups[n.site_id]) groups[n.site_id] = new Set()
       groups[n.site_id].add(n.source)
     })
@@ -141,9 +181,8 @@ export function useNews() {
   })
 
   const filteredNews = computed(() => {
-    let result = newsList.value
+    let result = filteredBySources.value
     
-    result = filterBySources(result)
     result = filterByTimeRange(result, timeRange.value)
     result = filterBySearch(result, searchQuery.value)
     result = filterBySite(result, selectedSite.value)
@@ -153,8 +192,7 @@ export function useNews() {
   })
 
   const stats = computed(() => {
-    const prefs = getPreferences()
-    const enabledNews = filterBySources(newsList.value)
+    const enabledNews = filteredBySources.value
     
     return {
       totalNews: enabledNews.length,

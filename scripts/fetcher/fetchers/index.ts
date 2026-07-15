@@ -1,8 +1,8 @@
 export { BaseFetcher, runFetcher } from './base.js';
-export { AiHubFetcher } from './aihub.js';
+export { AiHotFetcher } from './aihot.js';
 export { AiBaseFetcher } from './aibase.js';
 export { TechUrlsFetcher } from './techurls.js';
-export { RssFetcher } from './rss.js';
+export { BestBlogsFetcher } from './bestblogs.js';
 export { BuzzingFetcher } from './buzzing.js';
 export { IrisFetcher } from './iris.js';
 export { TophubFetcher } from './tophub.js';
@@ -16,10 +16,10 @@ export { fetchOpmlRss } from './opml-rss.js';
 export { fetchWaytoagiRecent7d } from './waytoagi.js';
 
 import type { Fetcher } from '../types.js';
-import { AiHubFetcher } from './aihub.js';
+import { AiHotFetcher } from './aihot.js';
 import { AiBaseFetcher } from './aibase.js';
 import { TechUrlsFetcher } from './techurls.js';
-import { RssFetcher } from './rss.js';
+import { BestBlogsFetcher } from './bestblogs.js';
 import { BuzzingFetcher } from './buzzing.js';
 import { IrisFetcher } from './iris.js';
 import { TophubFetcher } from './tophub.js';
@@ -39,11 +39,11 @@ export function createAllFetchers(): Fetcher[] {
     new ZeliFetcher(),
     new AiHubTodayFetcher(),
     new AiBaseFetcher(),
-    new AiHubFetcher(),
+    new AiHotFetcher(),
+    new BestBlogsFetcher(),
     new NewsNowFetcher(),
     new XinzhiyuanFetcher(),
     new WechatRssFetcher(),
     new YouTubeFetcher(),
-    new RssFetcher(),
   ];
 }

@@ -21,3 +21,4 @@ logs/
 
 .cache/
 .eslintcache
+*.tsbuildinfo

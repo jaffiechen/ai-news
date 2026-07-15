@@ -33,7 +33,7 @@ const SITE_INFO: Record<string, { description: string; url: string }> = {
   },
   newsnow: {
     description: '新闻聚合平台，实时追踪全球科技新闻',
-    url: 'https://newsnow.co/',
+    url: 'https://newsnow.busiyi.world/',
   },
   zeli: {
     description: 'Hacker News 24 小时热榜精选',
@@ -41,15 +41,19 @@ const SITE_INFO: Record<string, { description: string; url: string }> = {
   },
   aihubtoday: {
     description: 'AI 资讯日报，每日精选 AI 领域重要动态',
-    url: 'https://aihubtoday.com/',
+    url: 'https://ai.hubtoday.app/',
   },
   aibase: {
     description: 'AI 产品数据库，收录最新 AI 工具和应用',
-    url: 'https://www.aibase.com/',
+    url: 'https://www.aibase.com/zh/news',
   },
-  aihub: {
-    description: 'AI Hub 聚合平台，汇集 AI 相关资讯和工具',
-    url: 'https://aihub.cn/',
+  aihot: {
+    description: 'AI 今日热榜，聚合全球 AI 领域热门资讯',
+    url: 'https://aihot.today/',
+  },
+  bestblogs: {
+    description: 'BestBlogs 技术周刊，精选优质技术博客内容',
+    url: 'https://www.bestblogs.dev/',
   },
   opmlrss: {
     description: '自定义 RSS 订阅源，包含 Twitter/X 博主、AI 公司官方账号等',
@@ -71,13 +75,9 @@ const SITE_INFO: Record<string, { description: string; url: string }> = {
     description: 'Info Flow RSS 信息流，精选科技博客和资讯',
     url: 'https://info-flow.codelife.cc/',
   },
-  rss: {
-    description: 'RSS 订阅源聚合，汇集各类优质 RSS 内容',
-    url: '',
-  },
   waytoagi: {
     description: 'WaytoAGI - AI 知识图谱与资源导航',
-    url: 'https://waytoagi.com/',
+    url: 'https://waytoagi.feishu.cn/wiki/QPe5w5g7UisbEkkow8XcDmOpn8e',
   },
 }
 

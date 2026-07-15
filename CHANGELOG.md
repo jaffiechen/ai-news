@@ -5,6 +5,50 @@
 
 ---
 
+## [2.6.0] - 2026-07-16
+
+### ✨ 新增
+- **AI今日热榜（aihot）**：新增 AI 今日热榜数据源，聚合 400+ 条 AI 领域热门资讯
+- **BestBlogs 技术周刊**：新增 BestBlogs 技术周刊数据源，精选优质技术博客内容
+
+### 🐛 修复
+- **TechURLs 抓取失败**：修复域名错误（techurls.xyz → techurls.com），解决数据源概览中 TechURLs 显示红色叉号的问题
+
+### 🗑️ 移除
+- **AIHub 抓取器**：移除实现简陋且已被更优质源替代的 aihub.ts
+- **旧版 RSS 抓取器**：移除 rss.ts，统一使用 opml-rss.ts 管理 RSS 订阅
+
+### ⚡ 优化
+- **AIbase 抓取器重构**：重写 aibase.ts，使用更精准的选择器提取新闻标题和发布时间
+- **数据源概览弹窗**：更新 SITE_INFO 配置，修正多个站点的官方 URL 和描述信息
+- **抓取器对齐**：全面对齐 ai-news-aggregator 项目的 fetchers 实现，确保代码质量和功能一致性
+
+---
+
+## [2.5.0] - 2026-07-16
+
+### ✨ 新增
+- **TopHub 数据源集成**：新增 TopHub 今日热榜数据源，聚合 10 个 AI/科技相关订阅源
+  - Readhub · AI
+  - 开源中国 · 热门资讯
+  - 36氪 · 24小时热榜
+  - 掘金 · 人工智能本周最热
+  - 量子位 · 每日最新
+  - Product Hunt · 今日新产品
+  - GitHub · Trending Today
+  - 机器之心 · 文章库
+  - 少数派 · 热门文章 / #应用推荐
+- **数据源管理**：SourceModal 中新增 TopHub 站点描述和官方链接
+
+### 🐛 修复
+- **乱码检测误判**：修复 `hasMojibakeNoise` 函数将合法字符「·」（U+00B7）误判为乱码的问题，改为仅检测 `\ufffd`（替换字符），确保 TopHub 等含中文间隔号的来源能正常通过过滤
+- **无效数据过滤**：新增 AI HubToday 过期域名（Page Fallback）的过滤规则，自动移除标题含 "Click here to enter" 或来源含 "Page Fallback" 的无效数据
+
+### ⚡ 优化
+- **TopHub 关键词过滤**：优化 `tophubAllowKeywords` 配置，精准匹配 AI/科技类来源，结合内容级 AI 关键词实现双重过滤
+
+---
+
 ## [2.4.0] - 2026-07-16
 
 ### ✨ 新增

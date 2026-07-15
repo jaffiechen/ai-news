@@ -1,26 +1,38 @@
+import type { RawItem } from '../types.js';
 import { BaseFetcher } from './base.js';
+import { parseDate } from '../utils/date.js';
+import { joinUrl } from '../utils/url.js';
 
 export class AiBaseFetcher extends BaseFetcher {
   siteId = 'aibase';
   siteName = 'AIbase';
 
-  async fetch(now: Date): Promise<{ siteId: string; siteName: string; source: string; title: string; url: string; publishedAt: Date | null; meta: Record<string, unknown>; }[]> {
+  async fetch(now: Date): Promise<RawItem[]> {
     const $ = await this.fetchHtml('https://www.aibase.com/zh/news');
-    const items: { siteId: string; siteName: string; source: string; title: string; url: string; publishedAt: Date | null; meta: Record<string, unknown>; }[] = [];
+    const items: RawItem[] = [];
 
-    $('.news-item, .article-item, .list-item').each((_, el) => {
-      const title = $(el).find('h2, h3, .title').text().trim();
-      const link = $(el).find('a').attr('href');
+    $("a[href^='/news/']").each((_, a) => {
+      const $a = $(a);
+      const $h3 = $a.find('h3');
+      if (!$h3.length) return;
 
-      if (title && link) {
-        const url = link.startsWith('http') ? link : `https://www.aibase.com${link}`;
-        items.push(this.createItem({
-          source: 'AIbase',
+      const title = $h3.text().trim();
+      const href = ($a.attr('href') || '').trim();
+      if (!title || !href) return;
+
+      const $timeTag = $a.find('div.text-sm.text-gray-400 span');
+      const timeText = $timeTag.length ? $timeTag.text().trim() : '';
+      const publishedAt = parseDate(timeText, now);
+
+      items.push(
+        this.createItem({
+          source: this.siteName,
           title,
-          url,
-          publishedAt: now,
-        }));
-      }
+          url: joinUrl('https://www.aibase.com', href),
+          publishedAt,
+          meta: { time_hint: timeText },
+        })
+      );
     });
 
     return items;

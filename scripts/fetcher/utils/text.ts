@@ -9,7 +9,7 @@ export function maybeFixMojibake(text: string): string {
 
 export function hasMojibakeNoise(text: string): boolean {
   if (!text) return false;
-  return /[\ufffd\u0080-\u00ff]/.test(text);
+  return /[\ufffd]/.test(text);
 }
 
 export function containsAnyKeyword(haystack: string, keywords: string[]): boolean {
