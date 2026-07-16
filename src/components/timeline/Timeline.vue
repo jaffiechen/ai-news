@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import type { News, ApiResponse } from '@/types'
 import NewsCard from '@/components/cards/NewsCard.vue'
 import SkeletonScreen from '@/components/common/SkeletonScreen.vue'
@@ -26,43 +26,69 @@ const showUpdateBanner = ref(false)
 let updateInterval: number | null = null
 
 const displayCount = ref(30)
-const scrollContainer = ref<HTMLElement | null>(null)
-let rafId: number | null = null
+const sentinelRef = ref<HTMLElement | null>(null)
+let observer: IntersectionObserver | null = null
 
-const groupedNews = computed(() => {
-  const displayItems = props.newsList.slice(0, displayCount.value)
-  const groups: Record<string, News[]> = {}
-  displayItems.forEach(news => {
-    const date = formatDate(news.published_at || news.first_seen_at)
-    if (!groups[date]) {
-      groups[date] = []
-    }
-    groups[date].push(news)
-  })
-  return Object.entries(groups).map(([date, news]) => ({ date, news }))
+const flatDisplayNews = computed(() => {
+  return props.newsList.slice(0, displayCount.value)
 })
 
 const hasMore = computed(() => displayCount.value < props.newsList.length)
 
-function handleScroll() {
-  if (rafId) return
-  rafId = requestAnimationFrame(() => {
-    rafId = null
-    const el = scrollContainer.value
-    if (!el || !hasMore.value) return
-
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-    if (distanceFromBottom < 500) {
-      const increment = Math.min(30, props.newsList.length - displayCount.value)
-      if (increment > 0) {
-        displayCount.value += increment
-      }
+const groupedDisplayNews = computed(() => {
+  const groups: { date: string; news: News[] }[] = []
+  let currentDate = ''
+  
+  flatDisplayNews.value.forEach(news => {
+    const date = formatDate(news.published_at || news.first_seen_at)
+    if (date !== currentDate) {
+      currentDate = date
+      groups.push({ date, news: [news] })
+    } else {
+      groups[groups.length - 1].news.push(news)
     }
   })
+  
+  return groups
+})
+
+function loadMore() {
+  if (!hasMore.value) return
+  const increment = Math.min(30, props.newsList.length - displayCount.value)
+  if (increment > 0) {
+    displayCount.value += increment
+  }
+}
+
+function setupObserver() {
+  if (observer) {
+    observer.disconnect()
+    observer = null
+  }
+
+  if (!sentinelRef.value) return
+
+  observer = new IntersectionObserver((entries) => {
+    const entry = entries[0]
+    if (entry.isIntersecting) {
+      loadMore()
+    }
+  }, {
+    rootMargin: '400px 0px',
+    threshold: 0.01
+  })
+
+  observer.observe(sentinelRef.value)
 }
 
 watch(() => props.newsList.length, () => {
   displayCount.value = Math.min(30, props.newsList.length)
+})
+
+watch(hasMore, (newVal) => {
+  if (newVal) {
+    setTimeout(setupObserver, 50)
+  }
 })
 
 async function checkUpdates() {
@@ -82,32 +108,24 @@ async function handleRefresh() {
   showUpdateBanner.value = false
   await props.refreshNews()
   displayCount.value = Math.min(30, props.newsList.length)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   emit('refresh')
-}
-
-function scrollToTop() {
-  if (scrollContainer.value) {
-    scrollContainer.value.scrollTo({ top: 0, behavior: 'smooth' })
-  }
 }
 
 onMounted(() => {
   updateInterval = window.setInterval(checkUpdates, config.updateInterval)
   displayCount.value = Math.min(30, props.newsList.length)
+  setTimeout(setupObserver, 200)
 })
 
 onUnmounted(() => {
   if (updateInterval) {
     clearInterval(updateInterval)
   }
-  if (rafId) {
-    cancelAnimationFrame(rafId)
+  if (observer) {
+    observer.disconnect()
+    observer = null
   }
-})
-
-defineExpose({
-  scrollContainer,
-  scrollToTop
 })
 </script>
 
@@ -135,35 +153,21 @@ defineExpose({
         <p class="text-sm">数据加载中，请稍后刷新</p>
       </div>
 
-      <div 
-        v-else 
-        ref="scrollContainer"
-        @scroll="handleScroll"
-        class="timeline-scroll relative"
-      >
-        <div>
-          <div v-for="(group, groupIndex) in groupedNews" :key="group.date">
-            <div 
-              class="flex items-center gap-2 mb-3"
-              :class="groupIndex === 0 ? 'mt-2' : 'mt-6'"
-            >
-              <div class="h-px flex-1 bg-gradient-to-r from-blue-400 to-transparent"></div>
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ group.date }}</span>
-              <div class="h-px flex-1 bg-gradient-to-l from-blue-400 to-transparent"></div>
-            </div>
-            <NewsCard 
-              v-for="(news, newsIndex) in group.news" 
-              :key="news.id"
-              :news="news"
-              :show-date="false"
-              :is-last="groupIndex === groupedNews.length - 1 && newsIndex === group.news.length - 1"
-              :is-first-in-group="newsIndex === 0"
-              :is-last-in-group="newsIndex === group.news.length - 1"
-            />
-          </div>
-        </div>
+      <template v-else>
+        <template v-for="(group, groupIndex) in groupedDisplayNews" :key="group.date">
+          <NewsCard 
+            v-for="(news, newsIndex) in group.news" 
+            :key="news.id"
+            :news="news"
+            :show-date="newsIndex === 0"
+            :is-last="groupIndex === groupedDisplayNews.length - 1 && newsIndex === group.news.length - 1"
+            :is-first-in-group="newsIndex === 0"
+            :is-last-in-group="newsIndex === group.news.length - 1"
+          />
+        </template>
 
         <div 
+          ref="sentinelRef"
           v-if="hasMore" 
           class="py-6 text-center text-gray-400 text-sm"
         >
@@ -178,7 +182,7 @@ defineExpose({
         >
           <p>— 已经到底啦，共 {{ newsList.length }} 条资讯 —</p>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -193,31 +197,5 @@ defineExpose({
 .slide-leave-to {
   transform: translateY(-100%);
   opacity: 0;
-}
-
-.timeline-scroll {
-  height: calc(100vh - 320px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
-}
-
-.timeline-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-
-.timeline-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.timeline-scroll::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.3);
-  border-radius: 2px;
-}
-
-.timeline-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.5);
 }
 </style>
