@@ -32,6 +32,28 @@ export default defineConfig({
       workbox: {
         runtimeCaching: [
           {
+            urlPattern: /\.(?:js|css|png|jpg|jpeg|svg|gif|webp|ico|woff2?)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'ai-news-assets',
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 30 * 24 * 60 * 60
+              }
+            }
+          },
+          {
+            urlPattern: /latest-(24h|7d)\.json$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'ai-news-data',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 24 * 60 * 60
+              }
+            }
+          },
+          {
             urlPattern: /^https?.*/,
             handler: 'NetworkFirst',
             options: {

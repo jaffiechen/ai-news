@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { News, Source, SiteStat, ApiResponse, LatestPayload } from '@/types'
 import { config } from '@/config'
 import { success, error, ERROR_CODES } from '@/utils/response'
@@ -15,6 +15,93 @@ const selectedSite = ref('')
 const selectedSource = ref('')
 
 const preloadedData = ref<{ '24h'?: LatestPayload; '7d'?: LatestPayload }>({})
+
+const searchIndex = ref<Map<string, Set<number>>>(new Map())
+const searchIndexDirty = ref(true)
+
+function buildSearchIndex(items: News[]): Map<string, Set<number>> {
+  const index = new Map<string, Set<number>>()
+  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'shall'])
+
+  items.forEach((item, idx) => {
+    const fields = [
+      item.title,
+      item.title_zh || '',
+      item.source,
+      item.site_name,
+      item.summary || ''
+    ]
+
+    fields.forEach(field => {
+      const tokens = field.toLowerCase().split(/[\s\-_/\\.,!?;:()\[\]{}'"<>=+@#$%^&*|~`]+/)
+      tokens.forEach(token => {
+        if (!token || token.length < 2 || stopWords.has(token)) return
+        let set = index.get(token)
+        if (!set) {
+          set = new Set()
+          index.set(token, set)
+        }
+        set.add(idx)
+      })
+    })
+  })
+
+  return index
+}
+
+function searchByIndex(query: string, items: News[]): News[] {
+  if (!query.trim()) return items
+  const lowerQuery = query.toLowerCase().trim()
+  const terms = lowerQuery.split(/\s+/).filter(t => t.length >= 2)
+
+  if (terms.length === 0) return items
+
+  if (searchIndexDirty.value) {
+    searchIndex.value = buildSearchIndex(items)
+    searchIndexDirty.value = false
+  }
+
+  const index = searchIndex.value
+  let resultIndices: Set<number> | null = null
+
+  for (const term of terms) {
+    const termMatches: Set<number> = new Set()
+    let foundExact = false
+
+    if (index.has(term)) {
+      index.get(term)!.forEach(i => termMatches.add(i))
+      foundExact = true
+    }
+
+    if (!foundExact) {
+      for (const [key, indices] of index) {
+        if (key.includes(term)) {
+          indices.forEach(i => termMatches.add(i))
+        }
+      }
+    }
+
+    if (termMatches.size === 0) {
+      return []
+    }
+
+    if (resultIndices === null) {
+      resultIndices = termMatches
+    } else {
+      resultIndices = new Set([...resultIndices].filter((i: number) => termMatches.has(i)))
+    }
+
+    if (resultIndices.size === 0) {
+      return []
+    }
+  }
+
+  return resultIndices ? [...resultIndices].map((i: number) => items[i]) : items
+}
+
+watch(newsList, () => {
+  searchIndexDirty.value = true
+})
 
 export function useNews() {
   const { getPreferences, savePreferences } = useStorage()
@@ -139,13 +226,7 @@ export function useNews() {
 
   function filterBySearch(news: News[], query: string): News[] {
     if (!query.trim()) return news
-    const lowerQuery = query.toLowerCase()
-    return news.filter(n => 
-      n.title.toLowerCase().includes(lowerQuery) ||
-      (n.title_zh && n.title_zh.toLowerCase().includes(lowerQuery)) ||
-      n.source.toLowerCase().includes(lowerQuery) ||
-      n.site_name.toLowerCase().includes(lowerQuery)
-    )
+    return searchByIndex(query, news)
   }
 
   function filterBySite(news: News[], siteId: string): News[] {
@@ -183,7 +264,6 @@ export function useNews() {
   const filteredNews = computed(() => {
     let result = filteredBySources.value
     
-    result = filterByTimeRange(result, timeRange.value)
     result = filterBySearch(result, searchQuery.value)
     result = filterBySite(result, selectedSite.value)
     result = filterBySingleSource(result, selectedSource.value)
@@ -211,8 +291,18 @@ export function useNews() {
   function setTimeRange(range: '24h' | '7d') {
     timeRange.value = range
     if (preloadedData.value[range]) {
-      newsList.value = preloadedData.value[range]!.items
-      siteStats.value = preloadedData.value[range]!.site_stats
+      const data = preloadedData.value[range]!
+      const validItems = filterInvalidNews(data.items)
+      newsList.value = validItems.sort((a, b) => {
+        const timeA = a.published_at ? new Date(a.published_at).getTime() : 0
+        const timeB = b.published_at ? new Date(b.published_at).getTime() : 0
+        return timeB - timeA
+      })
+      const validSiteIds = new Set(validItems.map(n => n.site_id))
+      siteStats.value = (data.site_stats || []).filter(s => validSiteIds.has(s.site_id)).map(s => ({
+        ...s,
+        count: validItems.filter(n => n.site_id === s.site_id).length
+      }))
     } else {
       loadNews(range)
     }

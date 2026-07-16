@@ -35,7 +35,7 @@ const displayTitle = computed(() => {
 </script>
 
 <template>
-  <div class="relative">
+  <div class="news-card-wrapper">
     <div 
       v-if="showDate" 
       class="flex items-center gap-2 mb-3 mt-6"
@@ -153,3 +153,10 @@ const displayTitle = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.news-card-wrapper {
+  content-visibility: auto;
+  contain-intrinsic-size: 120px;
+}
+</style>
