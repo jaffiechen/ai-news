@@ -4010,5 +4010,17 @@
   "Police searched Twin Cities Flock cameras during ICE surge": "警方在 ICE 激增期间搜查了双城 Flock 摄像头",
   "Anthropic's newest ad is creeping people out": "Anthropic 的最新广告令人毛骨悚然",
   "OpenAI’s first hardware device is reportedly a screenless speaker that can move": "据报道，OpenAI 的第一款硬件设备是一款可移动的无屏扬声器",
-  "OpenAI pushes back on Apple trade secret lawsuit": "OpenAI 反击苹果商业秘密诉讼"
+  "OpenAI pushes back on Apple trade secret lawsuit": "OpenAI 反击苹果商业秘密诉讼",
+  "Meta is testing an AI bedtime story app for people with no imagination": "Meta 正在为没有想象力的人测试一款 AI 睡前故事应用程序",
+  "Wistron Opens Advanced Manufacturing Plant in Fort Worth to Produce NVIDIA AI Systems": "纬创资通在沃斯堡开设先进制造工厂，生产 NVIDIA AI 系统",
+  "We rewrote “Notion” from scratch to become an agent-friendly knowledge base. It imports and compiles...": "我们从头开始重写“Notion”，使其成为一个代理友好的知识库。它导入并编译...",
+  "We rewrote “Slack” from scratch to be 100% agent friendly.\r\n\r\nGenTeam is a new team chat where people ...": "我们从头开始重写了“Slack”，使其 100% 代理友好。\r\n\r\nGenTeam 是一个新的团队聊天工具，人们...",
+  "US pauses $1B in Medicaid payments to California, Minnesota": "美国暂停向加利福尼亚州、明尼苏达州支付 10 亿美元医疗补助",
+  "We rewrote “Outlook” to make email completely different from what it used to be.\r\n\r\nA 100% agent frien...": "我们重写了“Outlook”，使电子邮件与以前完全不同。\r\n\r\n100%代理好友...",
+  "Parallelizing Compilation: In-Process vs Multi-Process": "并行编译：进程内与多进程",
+  "Gemini last models: temperature, top_p, and top_k are deprecated and ignored": "Gemini 最后的模型：温度、top_p 和 top_k 已弃用并被忽略",
+  "Meta Used A.I. To Ban Accounts on Facebook and Instagram": "元使用人工智能禁止 Facebook 和 Instagram 帐户",
+  "The Sandboxing Manifesto for Agentic Execution": "代理执行的沙箱宣言",
+  "Greedy is optimal for single-pass semi-streaming matching": "贪婪对于单遍半流匹配是最佳的",
+  "Oh-my-pi: A coding agent with the IDE wired in": "Oh-my-pi：连接 IDE 的编码代理"
 }
