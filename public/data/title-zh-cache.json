@@ -11837,5 +11837,13 @@
   "Show HN: I worked on a new browser for 2 years, today it passed Acid 3": "Show HN：我为一款新浏览器工作了两年，今天它通过了 Acid 3",
   "Lost my phone at the office. Claude suggested tracking Bluetooth signal strength": "我的手机在办公室丢了。克劳德建议跟踪蓝牙信号强度",
   "OpenAI says it slowed Astra model development over security concerns": "OpenAI 表示，出于安全考虑，它放慢了 Astra 模型的开发速度",
-  "Domain-specific hyperspecialization (for SAT)": "特定领域的超专业化（针对 SAT）"
+  "Domain-specific hyperspecialization (for SAT)": "特定领域的超专业化（针对 SAT）",
+  "BasicSync: A simple app for running Syncthing on Android": "BasicSync：一个用于在 Android 上运行 Syncthing 的简单应用程序",
+  "Anthropic announces a feature that allows different Claude Code sessions to message each other with updates and other information, available on macOS and Linux (Marcus Mendes/9to5Mac)": "Anthropic 宣布推出一项功能，允许不同的 Claude Code 会话相互发送更新和其他信息，该功能可在 macOS 和 Linux 上使用 (Marcus Mendes/9to5Mac)",
+  "Sources: Situational Awareness invested $500M, including $400M this week, into Source Foundry, a startup that plans to develop new AI chip manufacturing tools (Wall Street Journal)": "资料来源：Situational Awareness 向 Source Foundry 投资了 5 亿美元，其中本周投资了 4 亿美元，这家初创公司计划开发新的 AI 芯片制造工具（华尔街日报）",
+  "Should AI labs be treated like the owners of dangerous animals?": "人工智能实验室是否应该像危险动物的主人一样对待？",
+  "U.S. Department of Energy Launches the Genesis Open Models Initiative": "美国能源部启动 Genesis 开放模型计划",
+  "Concurrency vs. Throughput: why more parallelism can make databases slower": "并发与吞吐量：为什么更多的并行性会使数据库变慢",
+  "Managing AI Coding Costs at Scale": "大规模管理人工智能编码成本",
+  "I've succesfully compiled Netscape 3.0.2 on a 64 Debian": "我已经在 64 位 Debian 上成功编译了 Netscape 3.0.2"
 }
